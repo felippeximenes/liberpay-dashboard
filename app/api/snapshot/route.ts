@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
   const blob = await put('snapshots/latest.json', JSON.stringify(body), {
     access: 'public',
     contentType: 'application/json',
+    allowOverwrite: true,
   });
 
   return NextResponse.json({ success: true, url: blob.url });
