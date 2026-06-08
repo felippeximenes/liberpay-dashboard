@@ -4,6 +4,8 @@ import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
 import { AlertTriangle } from 'lucide-react';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 async function getSnapshotData(): Promise<WeeklySnapshot> {
   const blobUrl = process.env.NEXT_PUBLIC_SNAPSHOT_URL;
@@ -14,10 +16,10 @@ async function getSnapshotData(): Promise<WeeklySnapshot> {
     return res.json();
   }
 
-  // Fallback: mock local (desenvolvimento / Fase 1)
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-  const res = await fetch(`${baseUrl}/data/mock.json`, { next: { revalidate: 3600 } });
-  return res.json();
+  // Fallback: lê o mock diretamente do filesystem (sem depender de servidor HTTP)
+  const filePath = join(process.cwd(), 'public', 'data', 'mock.json');
+  const raw = readFileSync(filePath, 'utf-8');
+  return JSON.parse(raw);
 }
 
 function formatWeek(week: string): string {
