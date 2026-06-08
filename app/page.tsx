@@ -1,100 +1,114 @@
-import Image from "next/image";
+import { WeeklySnapshot } from '@/types/snapshot';
+import FunnelChart from '@/components/FunnelChart';
+import SourceChart from '@/components/SourceChart';
+import EmailStats from '@/components/EmailStats';
+import WeeklyTable from '@/components/WeeklyTable';
+import { AlertTriangle } from 'lucide-react';
 
-export default function Home() {
+async function getSnapshotData(): Promise<WeeklySnapshot> {
+  const blobUrl = process.env.NEXT_PUBLIC_SNAPSHOT_URL;
+
+  if (blobUrl) {
+    const res = await fetch(blobUrl, { next: { revalidate: 3600 } });
+    if (!res.ok) throw new Error('Falha ao buscar snapshot');
+    return res.json();
+  }
+
+  // Fallback: mock local (desenvolvimento / Fase 1)
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+  const res = await fetch(`${baseUrl}/data/mock.json`, { next: { revalidate: 3600 } });
+  return res.json();
+}
+
+function formatWeek(week: string): string {
+  const [start, end] = week.split('/');
+  const fmt = (d: string) =>
+    new Date(d + 'T00:00:00Z').toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+  return `Semana de ${fmt(start)} a ${fmt(end)}`;
+}
+
+export default async function DashboardPage() {
+  const data = await getSnapshotData();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen" style={{ backgroundColor: '#F7F9FC' }}>
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-sm"
+              style={{ backgroundColor: '#1A56A0' }}
+            >
+              LP
+            </div>
+            <div>
+              <h1 className="text-xl font-bold" style={{ color: '#1A56A0' }}>
+                LiberPay
+              </h1>
+              <p className="text-xs" style={{ color: '#718096' }}>
+                Dashboard de Funil de Vendas
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium" style={{ color: '#2C3E50' }}>
+              {formatWeek(data.week)}
+            </p>
+            <p className="text-xs" style={{ color: '#718096' }}>
+              Atualizado em{' '}
+              {new Date(data.generatedAt).toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'UTC',
+              })}
+            </p>
+          </div>
         </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
+        {/* Banner de integração pendente */}
+        {data.conversion.transactions === null && (
+          <div
+            className="flex items-start gap-3 rounded-xl px-5 py-4 border"
+            style={{
+              backgroundColor: '#FFFBEB',
+              borderColor: '#F6AD55',
+              color: '#92400E',
+            }}
+          >
+            <AlertTriangle size={18} className="mt-0.5 shrink-0" style={{ color: '#F6AD55' }} />
+            <p className="text-sm">
+              <strong>Conversão LiberPay:</strong> aguardando integração com o dev Steven. Os dados de
+              transações e receita ainda não estão disponíveis.
+            </p>
+          </div>
+        )}
+
+        {/* Funil + Origens */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FunnelChart data={data} />
+          <SourceChart data={data} />
+        </div>
+
+        {/* Email Stats */}
+        <EmailStats data={data} />
+
+        {/* Tabela comparativa */}
+        <WeeklyTable data={data} />
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="text-center py-6 text-xs" style={{ color: '#718096' }}>
+        LiberPay &copy; {new Date().getFullYear()} — Dashboard interno
       </footer>
     </div>
   );
