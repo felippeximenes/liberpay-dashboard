@@ -18,11 +18,15 @@ Make.com (sexta 08h — America/Sao_Paulo)
         │
         ▼
   Vercel Blob Storage
-  snapshots/latest.json  (sobrescreve a cada semana)
+  ├── snapshots/latest.json          (sempre sobrescrito — semana mais recente)
+  └── snapshots/weeks/YYYY-MM-DD.json (arquivo por semana — histórico permanente)
         │
         ▼
   Dashboard Next.js
   liberpay-dashboard.vercel.app
+  ├── Visualiza semana selecionada (?week=YYYY-MM-DD)
+  ├── Exporta PDF via window.print()
+  └── Exporta CSV com os dados da semana
 ```
 
 ---
@@ -44,13 +48,17 @@ Make.com (sexta 08h — America/Sao_Paulo)
 ```
 liberpay-dashboard/
 ├── app/
-│   ├── page.tsx                  # Dashboard principal (Server Component)
+│   ├── page.tsx                  # Dashboard principal (Server Component, aceita ?week=)
 │   ├── layout.tsx                # Layout, metadata e favicon
+│   ├── globals.css               # Estilos globais + print CSS
 │   └── api/
-│       └── snapshot/
-│           └── route.ts          # POST endpoint — recebe dados do Make.com
+│       ├── snapshot/
+│       │   └── route.ts          # POST — salva latest.json + weeks/YYYY-MM-DD.json
+│       └── weeks/
+│           └── route.ts          # GET — lista semanas disponíveis no Blob
 ├── components/
-│   ├── FunnelChart.tsx           # Funil de vendas (barras horizontais)
+│   ├── Sidebar.tsx               # Sidebar com seletor de semanas e exportação
+│   ├── FunnelChart.tsx           # Funil de vendas (barras horizontais com gradiente)
 │   ├── SourceChart.tsx           # Origem dos visitantes
 │   ├── EmailStats.tsx            # Estatísticas de e-mail marketing
 │   └── WeeklyTable.tsx           # Comparativo semana atual vs anterior
@@ -58,7 +66,7 @@ liberpay-dashboard/
 │   └── snapshot.ts               # Interface WeeklySnapshot
 ├── public/
 │   ├── logo.png                  # Logo exibida no header
-│   ├── logo1.png                 # Favicon (aba do navegador)
+│   ├── logo1.png                 # Ícone da sidebar e favicon
 │   └── data/
 │       └── mock.json             # Dados de exemplo para dev local
 └── .env.local                    # Variáveis de ambiente (não versionado)
@@ -131,11 +139,29 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "url": "https://xxxx.public.blob.vercel-storage.com/snapshots/latest.json"
+  "url": "https://xxxx.public.blob.vercel-storage.com/snapshots/latest.json",
+  "weekKey": "2026-06-08"
 }
 ```
 
 O campo `week` deve seguir o formato `"YYYY-MM-DD/YYYY-MM-DD"` (início/fim da semana). O dashboard usa esse campo para exibir o período no header.
+
+A cada POST, dois arquivos são salvos no Blob:
+- `snapshots/latest.json` — sempre sobrescrito, usado como padrão pelo dashboard
+- `snapshots/weeks/YYYY-MM-DD.json` — arquivo permanente por semana (data final do período)
+
+### `GET /api/weeks`
+
+Retorna a lista de semanas salvas no Blob, ordenadas da mais recente para a mais antiga.
+
+```json
+{
+  "weeks": [
+    { "key": "2026-06-15", "url": "https://...", "uploadedAt": "..." },
+    { "key": "2026-06-08", "url": "https://...", "uploadedAt": "..." }
+  ]
+}
+```
 
 ---
 
@@ -241,6 +267,27 @@ npx vercel --prod --yes
 | MailPoet | Ativo | `totalSubscribers` |
 | Origem dos visitantes | Planejado | `ga4.bySource` — requer módulo GA4 separado com dimensão `sessionDefaultChannelGroup` |
 | Conversão LiberPay | Aguardando dev | `conversion.transactions`, `conversion.revenue` — integração pendente com a plataforma de pagamentos |
+
+---
+
+## Histórico e Navegação por Semanas
+
+O ícone de calendário na sidebar abre um painel com todas as semanas salvas. Clicar em uma semana atualiza o dashboard com os dados daquele período via URL param (`?week=YYYY-MM-DD`). O servidor busca o arquivo correspondente no Blob e renderiza os dados sem recarregar a página inteira.
+
+O histórico cresce automaticamente a cada execução semanal do Make.com — nenhuma configuração adicional é necessária.
+
+---
+
+## Exportação
+
+O ícone de download na sidebar oferece duas opções:
+
+| Formato | Como funciona |
+|---------|--------------|
+| **PDF** | `window.print()` com CSS de impressão que oculta sidebar, remove backgrounds e formata para A4 paisagem |
+| **CSV** | Gerado client-side com BOM UTF-8 (compatível com Excel e Google Sheets) |
+
+O painel de exportação é fechado automaticamente antes de abrir o diálogo de impressão para garantir que o PDF capture apenas o conteúdo do dashboard.
 
 ---
 
