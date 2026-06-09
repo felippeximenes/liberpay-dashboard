@@ -13,22 +13,23 @@ interface StatItemProps {
 
 function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatItemProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 0', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 0', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
       <div style={{
-        width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0,
+        width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
         background: gradient, color: 'white',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: `0 4px 12px ${shadow}`,
       }}>
         {icon}
       </div>
-      <div style={{ flex: 1 }}>
-        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+      {/* minWidth: 0 allows this flex child to shrink below its content size */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {label}
         </p>
-        {sub && <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '2px 0 0' }}>{sub}</p>}
+        {sub && <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</p>}
       </div>
-      <span style={{ fontSize: '20px', fontWeight: 700, color: accent, letterSpacing: '-0.4px' }}>
+      <span style={{ fontSize: '17px', fontWeight: 700, color: accent, letterSpacing: '-0.3px', flexShrink: 0 }}>
         {value}
       </span>
     </div>
@@ -44,7 +45,7 @@ export default function EmailStats({ data }: { data: WeeklySnapshot }) {
   const rateShadow = mailpoet.openRate < 20 ? 'rgba(224,62,90,0.28)' : 'rgba(0,192,160,0.28)';
 
   return (
-    <div className="glass" style={{ padding: '24px' }}>
+    <div className="glass" style={{ padding: '24px', overflow: 'hidden' }}>
       <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
         Email Marketing
       </h2>
@@ -76,16 +77,14 @@ export default function EmailStats({ data }: { data: WeeklySnapshot }) {
           gradient={rateGradient}
           shadow={rateShadow}
         />
-        <div style={{ borderBottom: 'none' }}>
-          <StatItem
-            icon={<Zap size={16} />}
-            label="Automações ativas"
-            value={String(mailpoet.automationsActive)}
-            accent="#F0883E"
-            gradient="linear-gradient(135deg, #F0883E, #F6B05E)"
-            shadow="rgba(240,136,62,0.28)"
-          />
-        </div>
+        <StatItem
+          icon={<Zap size={16} />}
+          label="Automações ativas"
+          value={String(mailpoet.automationsActive)}
+          accent="#F0883E"
+          gradient="linear-gradient(135deg, #F0883E, #F6B05E)"
+          shadow="rgba(240,136,62,0.28)"
+        />
       </div>
     </div>
   );
