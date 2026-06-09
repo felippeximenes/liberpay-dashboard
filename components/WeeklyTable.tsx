@@ -1,5 +1,5 @@
 import { WeeklySnapshot } from '@/types/snapshot';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface Row {
   label: string;
