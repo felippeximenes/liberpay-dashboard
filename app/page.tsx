@@ -48,7 +48,9 @@ export default async function DashboardPage() {
       <header className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="LiberPay" width={120} height={36} className="object-contain" />
+            <div className="rounded-xl px-4 py-2" style={{ backgroundColor: '#1A56A0' }}>
+              <Image src="/logo.png" alt="LiberPay" width={110} height={32} className="object-contain" />
+            </div>
           </div>
           <div className="text-right">
             <p className="text-sm font-medium" style={{ color: '#2C3E50' }}>
