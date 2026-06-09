@@ -3,6 +3,7 @@ import FunnelChart from '@/components/FunnelChart';
 import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
+import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -47,20 +48,7 @@ export default async function DashboardPage() {
       <header className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-sm"
-              style={{ backgroundColor: '#1A56A0' }}
-            >
-              LP
-            </div>
-            <div>
-              <h1 className="text-xl font-bold" style={{ color: '#1A56A0' }}>
-                LiberPay
-              </h1>
-              <p className="text-xs" style={{ color: '#718096' }}>
-                Dashboard de Funil de Vendas
-              </p>
-            </div>
+            <Image src="/logo.png" alt="LiberPay" width={120} height={36} className="object-contain" />
           </div>
           <div className="text-right">
             <p className="text-sm font-medium" style={{ color: '#2C3E50' }}>
