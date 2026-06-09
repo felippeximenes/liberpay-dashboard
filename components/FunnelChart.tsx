@@ -59,17 +59,18 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                     className="h-full rounded-lg flex items-center px-3 transition-all duration-500"
                     style={{ width: `${width}%`, backgroundColor: step.color }}
                   >
-                    {step.isPending ? (
+                    {step.isPending && (
                       <span className="text-xs font-medium text-white flex items-center gap-1 whitespace-nowrap">
                         <Clock size={12} /> Pendente
-                      </span>
-                    ) : (
-                      <span className="text-sm font-bold text-white">
-                        {(step.value ?? 0).toLocaleString('pt-BR')}
                       </span>
                     )}
                   </div>
                 </div>
+                {!step.isPending && (
+                  <span className="text-sm font-bold w-16 shrink-0" style={{ color: step.color }}>
+                    {(step.value ?? 0).toLocaleString('pt-BR')}
+                  </span>
+                )}
               </div>
             </div>
           );

@@ -23,14 +23,19 @@ async function getSnapshotData(): Promise<WeeklySnapshot> {
 }
 
 function formatWeek(week: string): string {
-  const [start, end] = week.split('/');
-  const fmt = (d: string) =>
-    new Date(d + 'T00:00:00Z').toLocaleDateString('pt-BR', {
+  const parts = week.split('/');
+  if (parts.length !== 2) return week;
+  const [start, end] = parts;
+  const fmt = (d: string) => {
+    const date = new Date(d + 'T00:00:00Z');
+    if (isNaN(date.getTime())) return d;
+    return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
       timeZone: 'UTC',
     });
+  };
   return `Semana de ${fmt(start)} a ${fmt(end)}`;
 }
 
