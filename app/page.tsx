@@ -91,7 +91,7 @@ export default async function DashboardPage() {
         boxShadow: '2px 0 20px rgba(59,125,216,0.06)',
       }}>
         <div style={{ background: '#1A56A0', borderRadius: '14px', padding: '8px 10px', marginBottom: '28px' }}>
-          <Image src="/logo.png" alt="LiberPay" width={36} height={22} className="object-contain" />
+          <Image src="/logo1.png" alt="LiberPay" width={32} height={32} className="object-contain" />
         </div>
         {NAV.map(({ icon, active }, i) => (
           <div key={i} style={{
@@ -113,13 +113,18 @@ export default async function DashboardPage() {
 
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)' }}>
+              <Image src="/logo1.png" alt="LiberPay" width={28} height={28} className="object-contain" />
+            </div>
+            <div>
             <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1A2340', margin: 0, letterSpacing: '-0.3px' }}>
               Dashboard de Funil
             </h1>
             <p style={{ fontSize: '13px', color: '#8892A6', margin: '5px 0 0' }}>
               {formatWeek(data.week)}
             </p>
+            </div>
           </div>
           <div className="glass" style={{ padding: '12px 20px', textAlign: 'right' }}>
             <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
