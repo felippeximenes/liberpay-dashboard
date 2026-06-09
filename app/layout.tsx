@@ -4,6 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'LiberPay — Dashboard de Funil de Vendas',
   description: 'Visibilidade semanal sobre a jornada do cliente LiberPay',
+  icons: { icon: '/logo1.png' },
 };
 
 export default function RootLayout({
