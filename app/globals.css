@@ -15,3 +15,26 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(59, 125, 216, 0.08);
 }
+
+@media print {
+  #sidebar { display: none !important; }
+
+  body { background: white !important; }
+
+  #dashboard-print {
+    margin-left: 0 !important;
+    padding: 24px !important;
+  }
+
+  .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid #e8edf5 !important;
+    box-shadow: none !important;
+  }
+
+  div[style*="linear-gradient(135deg, #EDF1FB"] {
+    background: white !important;
+  }
+}

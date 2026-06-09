@@ -7,18 +7,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: unknown;
+  let body: Record<string, unknown>;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const blob = await put('snapshots/latest.json', JSON.stringify(body), {
-    access: 'public',
-    contentType: 'application/json',
-    allowOverwrite: true,
-  });
+  const payload = JSON.stringify(body);
 
-  return NextResponse.json({ success: true, url: blob.url });
+  // Derives week key from "YYYY-MM-DD/YYYY-MM-DD" → end date, fallback to today
+  const weekStr = typeof body.week === 'string' ? body.week : '';
+  const weekKey = weekStr.includes('/') ? weekStr.split('/')[1] : new Date().toISOString().split('T')[0];
+
+  const [blob] = await Promise.all([
+    put('snapshots/latest.json', payload, {
+      access: 'public', contentType: 'application/json', allowOverwrite: true,
+    }),
+    put(`snapshots/weeks/${weekKey}.json`, payload, {
+      access: 'public', contentType: 'application/json', allowOverwrite: true,
+    }),
+  ]);
+
+  return NextResponse.json({ success: true, url: blob.url, weekKey });
 }

@@ -3,15 +3,31 @@ import FunnelChart from '@/components/FunnelChart';
 import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
+import Sidebar, { WeekEntry } from '@/components/Sidebar';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { LayoutDashboard, TrendingUp, Mail, Settings, Eye, Zap, Users } from 'lucide-react';
+import { list } from '@vercel/blob';
+import { Eye, Zap, Users, TrendingUp } from 'lucide-react';
 
-async function getSnapshotData(): Promise<WeeklySnapshot> {
-  const blobUrl = process.env.NEXT_PUBLIC_SNAPSHOT_URL;
-  if (blobUrl) {
-    const res = await fetch(blobUrl, { next: { revalidate: 3600 } });
+async function getWeeks(): Promise<WeekEntry[]> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
+  try {
+    const { blobs } = await list({ prefix: 'snapshots/weeks/' });
+    return blobs
+      .map((b) => ({
+        key: b.pathname.replace('snapshots/weeks/', '').replace('.json', ''),
+        url: b.url,
+      }))
+      .sort((a, b) => b.key.localeCompare(a.key));
+  } catch {
+    return [];
+  }
+}
+
+async function getSnapshotData(url?: string): Promise<WeeklySnapshot> {
+  if (url) {
+    const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error('Falha ao buscar snapshot');
     return res.json();
   }
@@ -32,15 +48,21 @@ function formatWeek(week: string): string {
   return `${fmt(start)} — ${fmt(end)}`;
 }
 
-const NAV = [
-  { icon: <LayoutDashboard size={20} />, active: true },
-  { icon: <TrendingUp size={20} /> },
-  { icon: <Mail size={20} /> },
-  { icon: <Settings size={20} /> },
-];
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: { week?: string };
+}) {
+  const weeks = await getWeeks();
 
-export default async function DashboardPage() {
-  const data = await getSnapshotData();
+  const weekParam = searchParams.week;
+  let snapshotUrl = process.env.NEXT_PUBLIC_SNAPSHOT_URL;
+  if (weekParam) {
+    const found = weeks.find((w) => w.key === weekParam);
+    if (found) snapshotUrl = found.url;
+  }
+
+  const data = await getSnapshotData(snapshotUrl);
 
   const kpis = [
     {
@@ -80,36 +102,9 @@ export default async function DashboardPage() {
   return (
     <div style={{ background: 'linear-gradient(135deg, #EDF1FB 0%, #E8F3FD 55%, #EEF0FC 100%)', minHeight: '100vh' }}>
 
-      {/* Sidebar */}
-      <aside style={{
-        position: 'fixed', left: 0, top: 0, width: '72px', height: '100vh', zIndex: 40,
-        background: 'rgba(255,255,255,0.55)',
-        backdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(255,255,255,0.80)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        padding: '20px 0', gap: '6px',
-        boxShadow: '2px 0 20px rgba(59,125,216,0.06)',
-      }}>
-        <div style={{ marginBottom: '28px' }}>
-          <Image src="/logo1.png" alt="LiberPay" width={44} height={44} className="object-contain" />
-        </div>
-        {NAV.map(({ icon, active }, i) => (
-          <div key={i} style={{
-            width: '44px', height: '44px', borderRadius: '12px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: active ? '#3B7DD8' : 'transparent',
-            color: active ? 'white' : '#A0ABBF',
-            boxShadow: active ? '0 4px 14px rgba(59,125,216,0.35)' : 'none',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-          }}>
-            {icon}
-          </div>
-        ))}
-      </aside>
+      <Sidebar weeks={weeks} currentWeek={weekParam} data={data} />
 
-      {/* Main content */}
-      <div style={{ marginLeft: '72px', padding: '28px 32px 40px', minHeight: '100vh' }}>
+      <div id="dashboard-print" style={{ marginLeft: '72px', padding: '28px 32px 40px', minHeight: '100vh' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
@@ -118,12 +113,12 @@ export default async function DashboardPage() {
               <Image src="/logo.png" alt="LiberPay" width={100} height={28} className="object-contain" />
             </div>
             <div>
-            <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1A2340', margin: 0, letterSpacing: '-0.3px' }}>
-              Dashboard de Funil
-            </h1>
-            <p style={{ fontSize: '13px', color: '#8892A6', margin: '5px 0 0' }}>
-              {formatWeek(data.week)}
-            </p>
+              <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1A2340', margin: 0, letterSpacing: '-0.3px' }}>
+                Dashboard de Funil
+              </h1>
+              <p style={{ fontSize: '13px', color: '#8892A6', margin: '5px 0 0' }}>
+                {formatWeek(data.week)}
+              </p>
             </div>
           </div>
           <div className="glass" style={{ padding: '12px 20px', textAlign: 'right' }}>
@@ -147,8 +142,7 @@ export default async function DashboardPage() {
                 width: '40px', height: '40px', borderRadius: '12px',
                 background: kpi.gradient, color: 'white',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: '16px',
-                boxShadow: `0 6px 16px ${kpi.shadow}`,
+                marginBottom: '16px', boxShadow: `0 6px 16px ${kpi.shadow}`,
               }}>
                 {kpi.icon}
               </div>
@@ -163,7 +157,7 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        {/* Charts row */}
+        {/* Charts */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
           <FunnelChart data={data} />
           <SourceChart data={data} />
