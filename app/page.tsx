@@ -114,9 +114,6 @@ export default async function DashboardPage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)' }}>
-              <Image src="/logo1.png" alt="LiberPay" width={28} height={28} className="object-contain" />
-            </div>
             <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)' }}>
               <Image src="/logo.png" alt="LiberPay" width={100} height={28} className="object-contain" />
             </div>
