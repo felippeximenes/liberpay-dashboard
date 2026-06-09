@@ -180,7 +180,7 @@ export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
 
           <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <button
-              onClick={() => { window.print(); setPanel(null); }}
+              onClick={() => { setPanel(null); setTimeout(() => window.print(), 150); }}
               style={{
                 width: '100%', padding: '14px 16px', border: 'none', borderRadius: '12px',
                 background: 'linear-gradient(135deg, #3B7DD8, #6EA8F0)',

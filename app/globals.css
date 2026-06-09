@@ -17,24 +17,33 @@ body {
 }
 
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 1.2cm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   #sidebar { display: none !important; }
 
-  body { background: white !important; }
+  body {
+    background: white !important;
+    color: #1A2340 !important;
+  }
 
   #dashboard-print {
     margin-left: 0 !important;
-    padding: 24px !important;
+    padding: 16px !important;
   }
 
   .glass {
     background: white !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border: 1px solid #e8edf5 !important;
+    border: 1px solid #dce4f0 !important;
     box-shadow: none !important;
-  }
-
-  div[style*="linear-gradient(135deg, #EDF1FB"] {
-    background: white !important;
   }
 }
