@@ -61,7 +61,8 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
         Comparativo Semanal
       </h2>
       <p style={{ fontSize: '12px', color: '#A0ABBF', margin: '0 0 18px' }}>vs. semana anterior</p>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '360px' }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'left', padding: '0 8px 12px 0', color: '#A0ABBF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
@@ -99,6 +100,7 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

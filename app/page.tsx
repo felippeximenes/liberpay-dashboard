@@ -104,12 +104,12 @@ export default async function DashboardPage({
 
       <Sidebar weeks={weeks} currentWeek={weekParam} data={data} />
 
-      <div id="dashboard-print" style={{ marginLeft: '72px', padding: '28px 32px 40px', minHeight: '100vh' }}>
+      <div id="dashboard-print" className="layout-main">
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
+        <div className="header-row">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)' }}>
+            <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)', flexShrink: 0 }}>
               <Image src="/logo.png" alt="LiberPay" width={100} height={28} className="object-contain" />
             </div>
             <div>
@@ -121,7 +121,7 @@ export default async function DashboardPage({
               </p>
             </div>
           </div>
-          <div className="glass" style={{ padding: '12px 20px', textAlign: 'right' }}>
+          <div className="glass" style={{ padding: '12px 20px', textAlign: 'right', flexShrink: 0 }}>
             <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
               Última atualização
             </p>
@@ -135,7 +135,7 @@ export default async function DashboardPage({
         </div>
 
         {/* KPI Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '20px' }}>
+        <div className="grid-kpi">
           {kpis.map((kpi) => (
             <div key={kpi.label} className="glass" style={{ padding: '22px' }}>
               <div style={{
@@ -149,7 +149,7 @@ export default async function DashboardPage({
               <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
                 {kpi.label}
               </p>
-              <p style={{ fontSize: '28px', fontWeight: 700, color: '#1A2340', margin: '5px 0 5px', letterSpacing: '-0.5px', lineHeight: 1 }}>
+              <p className="kpi-value">
                 {kpi.value !== null ? kpi.value.toLocaleString('pt-BR') : '—'}
               </p>
               <p style={{ fontSize: '12px', color: '#B0BCCE', margin: 0 }}>{kpi.sub}</p>
@@ -158,13 +158,13 @@ export default async function DashboardPage({
         </div>
 
         {/* Charts */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+        <div className="grid-2col" style={{ marginBottom: '20px' }}>
           <FunnelChart data={data} />
           <SourceChart data={data} />
         </div>
 
         {/* Bottom row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div className="grid-2col">
           <EmailStats data={data} />
           <WeeklyTable data={data} />
         </div>

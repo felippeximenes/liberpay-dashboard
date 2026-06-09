@@ -47,18 +47,16 @@ function downloadCSV(data: WeeklySnapshot) {
 
 type Panel = 'weeks' | 'export' | null;
 
-export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
-  const [panel, setPanel] = useState<Panel>(null);
-  const router = useRouter();
-
-  const toggle = (p: Exclude<Panel, null>) => setPanel((prev) => (prev === p ? null : p));
-
-  const selectWeek = (key: string | null) => {
-    router.push(key ? `?week=${key}` : '/');
-    setPanel(null);
-  };
-
-  const navItem = (icon: React.ReactNode, active: boolean, onClick: () => void) => (
+function NavIcon({
+  icon,
+  active,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
     <div
       onClick={onClick}
       style={{
@@ -73,10 +71,115 @@ export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
       {icon}
     </div>
   );
+}
+
+export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
+  const [panel, setPanel] = useState<Panel>(null);
+  const router = useRouter();
+
+  const toggle = (p: Exclude<Panel, null>) => setPanel((prev) => (prev === p ? null : p));
+  const selectWeek = (key: string | null) => {
+    router.push(key ? `?week=${key}` : '/');
+    setPanel(null);
+  };
+
+  const weeksPanel = (
+    <div className="sidebar-panel" style={{ width: '260px' }}>
+      <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(237,241,251,0.90)', flexShrink: 0 }}>
+        <p style={{ fontSize: '14px', fontWeight: 700, color: '#1A2340', margin: 0 }}>Histórico</p>
+        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '4px 0 0' }}>
+          {weeks.length > 0 ? `${weeks.length} semana${weeks.length > 1 ? 's' : ''} salva${weeks.length > 1 ? 's' : ''}` : 'Nenhum histórico ainda'}
+        </p>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+        <div
+          onClick={() => selectWeek(null)}
+          style={{
+            padding: '12px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
+            background: !currentWeek ? 'rgba(59,125,216,0.08)' : 'transparent',
+            borderLeft: !currentWeek ? '3px solid #3B7DD8' : '3px solid transparent',
+          }}
+        >
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00C0A0', flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#1A2340', margin: 0 }}>Semana Atual</p>
+            <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '2px 0 0' }}>Mais recente</p>
+          </div>
+          {!currentWeek && <ChevronRight size={14} color="#3B7DD8" />}
+        </div>
+
+        {weeks.length === 0 && (
+          <p style={{ fontSize: '12px', color: '#B0BCCE', margin: '20px 20px 0', lineHeight: 1.6 }}>
+            O histórico será preenchido a cada execução do Make.com nas próximas sextas-feiras.
+          </p>
+        )}
+
+        {weeks.map((w) => (
+          <div
+            key={w.key}
+            onClick={() => selectWeek(w.key)}
+            style={{
+              padding: '12px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
+              background: currentWeek === w.key ? 'rgba(59,125,216,0.08)' : 'transparent',
+              borderLeft: currentWeek === w.key ? '3px solid #3B7DD8' : '3px solid transparent',
+            }}
+          >
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#C8D3E8', flexShrink: 0 }} />
+            <p style={{ fontSize: '13px', fontWeight: 500, color: '#1A2340', margin: 0, flex: 1 }}>
+              {formatWeekKey(w.key)}
+            </p>
+            {currentWeek === w.key && <ChevronRight size={14} color="#3B7DD8" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const exportPanel = (
+    <div className="sidebar-panel" style={{ width: '240px' }}>
+      <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+        <p style={{ fontSize: '14px', fontWeight: 700, color: '#1A2340', margin: 0 }}>Exportar</p>
+        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '4px 0 0' }}>
+          Semana: {data.week !== 'semana-atual' ? data.week : 'atual'}
+        </p>
+      </div>
+      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <button
+          onClick={() => { setPanel(null); setTimeout(() => window.print(), 150); }}
+          style={{
+            width: '100%', padding: '14px 16px', border: 'none', borderRadius: '12px',
+            background: 'linear-gradient(135deg, #3B7DD8, #6EA8F0)',
+            color: 'white', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '10px',
+            boxShadow: '0 4px 14px rgba(59,125,216,0.30)',
+          }}
+        >
+          <FileText size={16} />
+          Exportar PDF
+        </button>
+        <button
+          onClick={() => { downloadCSV(data); setPanel(null); }}
+          style={{
+            width: '100%', padding: '14px 16px', borderRadius: '12px',
+            background: 'rgba(59,125,216,0.07)', border: '1px solid rgba(59,125,216,0.18)',
+            color: '#3B7DD8', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '10px',
+          }}
+        >
+          <Download size={16} />
+          Exportar CSV
+        </button>
+        <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '6px 0 0', lineHeight: 1.6 }}>
+          <strong style={{ color: '#8892A6' }}>PDF</strong> — captura o visual do dashboard.<br />
+          <strong style={{ color: '#8892A6' }}>CSV</strong> — dados em formato planilha.
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <>
-      {/* Sidebar */}
+      {/* ── Desktop sidebar ── */}
       <aside id="sidebar" style={{
         position: 'fixed', left: 0, top: 0, width: '72px', height: '100vh', zIndex: 40,
         background: 'rgba(255,255,255,0.55)',
@@ -89,132 +192,27 @@ export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
         <div style={{ marginBottom: '28px' }}>
           <Image src="/logo1.png" alt="LiberPay" width={44} height={44} className="object-contain" />
         </div>
-
-        {navItem(<LayoutDashboard size={20} />, panel === null, () => setPanel(null))}
-        {navItem(<Calendar size={20} />, panel === 'weeks', () => toggle('weeks'))}
-        {navItem(<Download size={20} />, panel === 'export', () => toggle('export'))}
-
+        <NavIcon icon={<LayoutDashboard size={20} />} active={panel === null} onClick={() => setPanel(null)} />
+        <NavIcon icon={<Calendar size={20} />} active={panel === 'weeks'} onClick={() => toggle('weeks')} />
+        <NavIcon icon={<Download size={20} />} active={panel === 'export'} onClick={() => toggle('export')} />
         <div style={{ marginTop: 'auto', marginBottom: '8px' }}>
-          {navItem(<Settings size={20} />, false, () => {})}
+          <NavIcon icon={<Settings size={20} />} active={false} onClick={() => {}} />
         </div>
       </aside>
 
-      {/* Weeks panel */}
-      {panel === 'weeks' && (
-        <div style={{
-          position: 'fixed', left: '72px', top: 0, width: '260px', height: '100vh', zIndex: 39,
-          background: 'rgba(255,255,255,0.88)',
-          backdropFilter: 'blur(20px)',
-          borderRight: '1px solid rgba(255,255,255,0.80)',
-          boxShadow: '4px 0 24px rgba(59,125,216,0.10)',
-          display: 'flex', flexDirection: 'column',
-        }}>
-          <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(237,241,251,0.90)', flexShrink: 0 }}>
-            <p style={{ fontSize: '14px', fontWeight: 700, color: '#1A2340', margin: 0 }}>Histórico</p>
-            <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '4px 0 0' }}>
-              {weeks.length > 0 ? `${weeks.length} semana${weeks.length > 1 ? 's' : ''} salva${weeks.length > 1 ? 's' : ''}` : 'Nenhum histórico ainda'}
-            </p>
-          </div>
+      {/* ── Mobile bottom nav ── */}
+      <nav className="mobile-nav">
+        <NavIcon icon={<LayoutDashboard size={22} />} active={panel === null} onClick={() => setPanel(null)} />
+        <NavIcon icon={<Calendar size={22} />} active={panel === 'weeks'} onClick={() => toggle('weeks')} />
+        <NavIcon icon={<Download size={22} />} active={panel === 'export'} onClick={() => toggle('export')} />
+        <NavIcon icon={<Settings size={22} />} active={false} onClick={() => {}} />
+      </nav>
 
-          <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
-            {/* Semana atual (latest) */}
-            <div
-              onClick={() => selectWeek(null)}
-              style={{
-                padding: '12px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
-                background: !currentWeek ? 'rgba(59,125,216,0.08)' : 'transparent',
-                borderLeft: !currentWeek ? '3px solid #3B7DD8' : '3px solid transparent',
-              }}
-            >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00C0A0', flexShrink: 0 }} />
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '13px', fontWeight: 600, color: '#1A2340', margin: 0 }}>Semana Atual</p>
-                <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '2px 0 0' }}>Mais recente</p>
-              </div>
-              {!currentWeek && <ChevronRight size={14} color="#3B7DD8" />}
-            </div>
+      {/* ── Panels ── */}
+      {panel === 'weeks' && weeksPanel}
+      {panel === 'export' && exportPanel}
 
-            {weeks.length === 0 && (
-              <p style={{ fontSize: '12px', color: '#B0BCCE', margin: '20px 20px 0', lineHeight: 1.6 }}>
-                O histórico será preenchido automaticamente a cada execução do Make.com nas próximas sextas-feiras.
-              </p>
-            )}
-
-            {weeks.map((w) => (
-              <div
-                key={w.key}
-                onClick={() => selectWeek(w.key)}
-                style={{
-                  padding: '12px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
-                  background: currentWeek === w.key ? 'rgba(59,125,216,0.08)' : 'transparent',
-                  borderLeft: currentWeek === w.key ? '3px solid #3B7DD8' : '3px solid transparent',
-                }}
-              >
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#C8D3E8', flexShrink: 0 }} />
-                <p style={{ fontSize: '13px', fontWeight: 500, color: '#1A2340', margin: 0, flex: 1 }}>
-                  {formatWeekKey(w.key)}
-                </p>
-                {currentWeek === w.key && <ChevronRight size={14} color="#3B7DD8" />}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Export panel */}
-      {panel === 'export' && (
-        <div style={{
-          position: 'fixed', left: '72px', top: 0, width: '240px', height: '100vh', zIndex: 39,
-          background: 'rgba(255,255,255,0.88)',
-          backdropFilter: 'blur(20px)',
-          borderRight: '1px solid rgba(255,255,255,0.80)',
-          boxShadow: '4px 0 24px rgba(59,125,216,0.10)',
-          display: 'flex', flexDirection: 'column',
-        }}>
-          <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
-            <p style={{ fontSize: '14px', fontWeight: 700, color: '#1A2340', margin: 0 }}>Exportar</p>
-            <p style={{ fontSize: '11px', color: '#A0ABBF', margin: '4px 0 0' }}>
-              Semana: {data.week !== 'semana-atual' ? data.week : 'atual'}
-            </p>
-          </div>
-
-          <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <button
-              onClick={() => { setPanel(null); setTimeout(() => window.print(), 150); }}
-              style={{
-                width: '100%', padding: '14px 16px', border: 'none', borderRadius: '12px',
-                background: 'linear-gradient(135deg, #3B7DD8, #6EA8F0)',
-                color: 'white', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: '10px',
-                boxShadow: '0 4px 14px rgba(59,125,216,0.30)',
-              }}
-            >
-              <FileText size={16} />
-              Exportar PDF
-            </button>
-
-            <button
-              onClick={() => { downloadCSV(data); setPanel(null); }}
-              style={{
-                width: '100%', padding: '14px 16px', borderRadius: '12px',
-                background: 'rgba(59,125,216,0.07)', border: '1px solid rgba(59,125,216,0.18)',
-                color: '#3B7DD8', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: '10px',
-              }}
-            >
-              <Download size={16} />
-              Exportar CSV
-            </button>
-
-            <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '6px 0 0', lineHeight: 1.6 }}>
-              <strong style={{ color: '#8892A6' }}>PDF</strong> — captura o visual do dashboard.<br />
-              <strong style={{ color: '#8892A6' }}>CSV</strong> — dados em formato planilha para Excel ou Sheets.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Backdrop */}
+      {/* ── Backdrop ── */}
       {panel !== null && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 38 }} onClick={() => setPanel(null)} />
       )}
