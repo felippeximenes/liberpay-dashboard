@@ -3,7 +3,6 @@ import FunnelChart from '@/components/FunnelChart';
 import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
-import { AlertTriangle } from 'lucide-react';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -83,24 +82,6 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
-        {/* Banner de integração pendente */}
-        {data.conversion.transactions === null && (
-          <div
-            className="flex items-start gap-3 rounded-xl px-5 py-4 border"
-            style={{
-              backgroundColor: '#FFFBEB',
-              borderColor: '#F6AD55',
-              color: '#92400E',
-            }}
-          >
-            <AlertTriangle size={18} className="mt-0.5 shrink-0" style={{ color: '#F6AD55' }} />
-            <p className="text-sm">
-              <strong>Conversão LiberPay:</strong> aguardando integração com o dev Steven. Os dados de
-              transações e receita ainda não estão disponíveis.
-            </p>
-          </div>
-        )}
-
         {/* Funil + Origens */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <FunnelChart data={data} />
