@@ -90,8 +90,8 @@ export default async function DashboardPage() {
         padding: '20px 0', gap: '6px',
         boxShadow: '2px 0 20px rgba(59,125,216,0.06)',
       }}>
-        <div style={{ background: '#1A56A0', borderRadius: '14px', padding: '8px 10px', marginBottom: '28px' }}>
-          <Image src="/logo1.png" alt="LiberPay" width={32} height={32} className="object-contain" />
+        <div style={{ marginBottom: '28px' }}>
+          <Image src="/logo1.png" alt="LiberPay" width={44} height={44} className="object-contain" />
         </div>
         {NAV.map(({ icon, active }, i) => (
           <div key={i} style={{
