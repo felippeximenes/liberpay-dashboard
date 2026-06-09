@@ -16,26 +16,30 @@ function formatValue(value: number | null, isRate?: boolean): string {
 
 function Delta({ current, previous, isRate }: { current: number | null; previous: number | null; isRate?: boolean }) {
   if (current === null || previous === null || previous === 0) {
-    return <span className="text-gray-400 text-sm flex items-center gap-1"><Minus size={14} /> —</span>;
+    return (
+      <span style={{ fontSize: '12px', color: '#B0BCCE', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <Minus size={13} /> —
+      </span>
+    );
   }
 
   if (isRate) {
     const diff = current - previous;
-    const isPositive = diff >= 0;
+    const up = diff >= 0;
     return (
-      <span className={`text-sm font-medium flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
-        {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-        {isPositive ? '+' : ''}{diff.toFixed(1)}pp
+      <span style={{ fontSize: '12px', fontWeight: 600, color: up ? '#00C0A0' : '#E03E5A', display: 'flex', alignItems: 'center', gap: '4px', background: up ? 'rgba(0,192,160,0.10)' : 'rgba(224,62,90,0.10)', padding: '3px 8px', borderRadius: '20px' }}>
+        {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+        {up ? '+' : ''}{diff.toFixed(1)}pp
       </span>
     );
   }
 
   const pct = ((current - previous) / previous) * 100;
-  const isPositive = pct >= 0;
+  const up = pct >= 0;
   return (
-    <span className={`text-sm font-medium flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
-      {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-      {isPositive ? '+' : ''}{pct.toFixed(0)}%
+    <span style={{ fontSize: '12px', fontWeight: 600, color: up ? '#00C0A0' : '#E03E5A', display: 'flex', alignItems: 'center', gap: '4px', background: up ? 'rgba(0,192,160,0.10)' : 'rgba(224,62,90,0.10)', padding: '3px 8px', borderRadius: '20px' }}>
+      {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+      {up ? '+' : ''}{pct.toFixed(0)}%
     </span>
   );
 }
@@ -52,29 +56,44 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 overflow-x-auto">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Comparativo Semanal</h2>
-      <table className="w-full text-sm">
+    <div className="glass" style={{ padding: '24px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
+        Comparativo Semanal
+      </h2>
+      <p style={{ fontSize: '12px', color: '#A0ABBF', margin: '0 0 18px' }}>vs. semana anterior</p>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
         <thead>
-          <tr className="border-b border-gray-100">
-            <th className="text-left py-2 px-3 text-gray-500 font-medium">Métrica</th>
-            <th className="text-right py-2 px-3 text-gray-500 font-medium">Semana Atual</th>
-            <th className="text-right py-2 px-3 text-gray-500 font-medium">Semana Anterior</th>
-            <th className="text-right py-2 px-3 text-gray-500 font-medium">Variação</th>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '0 8px 12px 0', color: '#A0ABBF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+              Métrica
+            </th>
+            <th style={{ textAlign: 'right', padding: '0 8px 12px', color: '#A0ABBF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+              Atual
+            </th>
+            <th style={{ textAlign: 'right', padding: '0 8px 12px', color: '#A0ABBF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+              Anterior
+            </th>
+            <th style={{ textAlign: 'right', padding: '0 0 12px 8px', color: '#A0ABBF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+              Δ
+            </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.label} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-              <td className="py-3 px-3 font-medium text-gray-700">{row.label}</td>
-              <td className="py-3 px-3 text-right font-bold text-gray-800">
+          {rows.map((row, i) => (
+            <tr key={row.label}>
+              <td style={{ padding: '12px 8px 12px 0', fontWeight: 600, color: '#1A2340', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,241,251,0.90)' : 'none' }}>
+                {row.label}
+              </td>
+              <td style={{ padding: '12px 8px', textAlign: 'right', fontWeight: 700, color: '#1A2340', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,241,251,0.90)' : 'none' }}>
                 {formatValue(row.current, row.isRate)}
               </td>
-              <td className="py-3 px-3 text-right text-gray-500">
+              <td style={{ padding: '12px 8px', textAlign: 'right', color: '#8892A6', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,241,251,0.90)' : 'none' }}>
                 {formatValue(row.previous, row.isRate)}
               </td>
-              <td className="py-3 px-3 text-right">
-                <Delta current={row.current} previous={row.previous} isRate={row.isRate} />
+              <td style={{ padding: '12px 0 12px 8px', textAlign: 'right', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,241,251,0.90)' : 'none' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Delta current={row.current} previous={row.previous} isRate={row.isRate} />
+                </div>
               </td>
             </tr>
           ))}

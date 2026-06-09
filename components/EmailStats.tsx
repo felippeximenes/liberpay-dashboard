@@ -1,58 +1,91 @@
 import { WeeklySnapshot } from '@/types/snapshot';
 import { UserPlus, Users, Mail, Zap } from 'lucide-react';
 
-interface StatCardProps {
+interface StatItemProps {
   icon: React.ReactNode;
   label: string;
   value: string;
   sub?: string;
-  valueColor?: string;
+  accent: string;
+  gradient: string;
+  shadow: string;
 }
 
-function StatCard({ icon, label, value, sub, valueColor }: StatCardProps) {
+function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatItemProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-start gap-4">
-      <div className="p-2 bg-blue-50 rounded-xl text-blue-600">{icon}</div>
-      <div>
-        <p className="text-xs text-gray-500 mb-1">{label}</p>
-        <p className={`text-2xl font-bold ${valueColor ?? 'text-gray-800'}`}>{value}</p>
-        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 0', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+      <div style={{
+        width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0,
+        background: gradient, color: 'white',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: `0 4px 12px ${shadow}`,
+      }}>
+        {icon}
       </div>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          {label}
+        </p>
+        {sub && <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '2px 0 0' }}>{sub}</p>}
+      </div>
+      <span style={{ fontSize: '20px', fontWeight: 700, color: accent, letterSpacing: '-0.4px' }}>
+        {value}
+      </span>
     </div>
   );
 }
 
 export default function EmailStats({ data }: { data: WeeklySnapshot }) {
   const { mailpoet } = data;
-  const openRateColor = mailpoet.openRate < 20 ? 'text-red-500' : 'text-green-600';
+  const rateAccent = mailpoet.openRate < 20 ? '#E03E5A' : '#00C0A0';
+  const rateGradient = mailpoet.openRate < 20
+    ? 'linear-gradient(135deg, #E03E5A, #F07090)'
+    : 'linear-gradient(135deg, #00C0A0, #00DDB8)';
+  const rateShadow = mailpoet.openRate < 20 ? 'rgba(224,62,90,0.28)' : 'rgba(0,192,160,0.28)';
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Email Marketing (MailPoet)</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          icon={<UserPlus size={20} />}
+    <div className="glass" style={{ padding: '24px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
+        Email Marketing
+      </h2>
+      <p style={{ fontSize: '12px', color: '#A0ABBF', margin: '0 0 4px' }}>MailPoet</p>
+      <div>
+        <StatItem
+          icon={<UserPlus size={16} />}
           label="Novos assinantes"
           value={mailpoet.newSubscribers.toLocaleString('pt-BR')}
           sub="esta semana"
+          accent="#3B7DD8"
+          gradient="linear-gradient(135deg, #3B7DD8, #6EA8F0)"
+          shadow="rgba(59,125,216,0.28)"
         />
-        <StatCard
-          icon={<Users size={20} />}
+        <StatItem
+          icon={<Users size={16} />}
           label="Total de assinantes"
           value={mailpoet.totalSubscribers.toLocaleString('pt-BR')}
+          accent="#7B6FD0"
+          gradient="linear-gradient(135deg, #7B6FD0, #A99FE8)"
+          shadow="rgba(123,111,208,0.28)"
         />
-        <StatCard
-          icon={<Mail size={20} />}
+        <StatItem
+          icon={<Mail size={16} />}
           label="Taxa de abertura"
           value={`${mailpoet.openRate.toFixed(1)}%`}
-          sub={mailpoet.openRate < 20 ? 'Abaixo do ideal (20%)' : 'Boa taxa'}
-          valueColor={openRateColor}
+          sub={mailpoet.openRate < 20 ? 'Abaixo de 20% (ideal)' : 'Boa taxa de abertura'}
+          accent={rateAccent}
+          gradient={rateGradient}
+          shadow={rateShadow}
         />
-        <StatCard
-          icon={<Zap size={20} />}
-          label="Automações ativas"
-          value={String(mailpoet.automationsActive)}
-        />
+        <div style={{ borderBottom: 'none' }}>
+          <StatItem
+            icon={<Zap size={16} />}
+            label="Automações ativas"
+            value={String(mailpoet.automationsActive)}
+            accent="#F0883E"
+            gradient="linear-gradient(135deg, #F0883E, #F6B05E)"
+            shadow="rgba(240,136,62,0.28)"
+          />
+        </div>
       </div>
     </div>
   );
