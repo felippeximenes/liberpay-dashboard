@@ -179,6 +179,8 @@ O cenário roda toda **sexta-feira às 08:00 (America/Sao_Paulo)** e coleta auto
 | 12 | Array aggregator | Aggregator | Consolida a lista de deals em 1 bundle |
 | 13 | HTTP | Action | GET na API REST do MailPoet para total de assinantes |
 | 14 | HTTP | Action | POST em `/api/snapshot` com todos os dados |
+| 23 | Google Analytics 4 — Generate a Report | Search | Busca sessões por canal (`sessionDefaultChannelGroup`) dos últimos 7 dias |
+| 24 | Tools — Text Aggregator | Aggregator | Consolida os bundles de canal em string JSON para `ga4.bySource` |
 
 ### Configuração do Módulo 9 — GA4 Report
 
@@ -265,7 +267,7 @@ npx vercel --prod --yes
 | Google Analytics 4 | Ativo | `visitors`, `newUsers`, `leads` |
 | Pipedrive CRM | Ativo | `dealsCreated` |
 | MailPoet | Ativo | `totalSubscribers` |
-| Origem dos visitantes | Planejado | `ga4.bySource` — requer módulo GA4 separado com dimensão `sessionDefaultChannelGroup` |
+| Origem dos visitantes | Ativo | `ga4.bySource` — módulo GA4 com dimensão `sessionDefaultChannelGroup` + Text Aggregator |
 | Conversão LiberPay | Aguardando dev | `conversion.transactions`, `conversion.revenue` — integração pendente com a plataforma de pagamentos |
 
 ---
