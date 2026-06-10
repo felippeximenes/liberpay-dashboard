@@ -1,18 +1,38 @@
-'use client';
-
 import { WeeklySnapshot } from '@/types/snapshot';
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, Globe, Search, TrendingUp, HelpCircle, Link, CreditCard, Users, Play, Megaphone } from 'lucide-react';
+
+const CHANNEL_LABELS: Record<string, string> = {
+  'Direct': 'Acesso Direto',
+  'Organic Search': 'Busca Orgânica',
+  'Paid Social': 'Social Pago',
+  'Unassigned': 'Não Identificado',
+  'Referral': 'Indicação',
+  'Paid Other': 'Outro Pago',
+  'Organic Social': 'Social Orgânico',
+  'Paid Search': 'Busca Paga',
+  'Organic Video': 'Vídeo Orgânico',
+};
+
+const CHANNEL_ICONS: Record<string, React.ReactNode> = {
+  'Direct': <Globe size={15} />,
+  'Organic Search': <Search size={15} />,
+  'Paid Social': <Megaphone size={15} />,
+  'Unassigned': <HelpCircle size={15} />,
+  'Referral': <Link size={15} />,
+  'Paid Other': <CreditCard size={15} />,
+  'Organic Social': <Users size={15} />,
+  'Paid Search': <TrendingUp size={15} />,
+  'Organic Video': <Play size={15} />,
+};
 
 const GRADIENTS = [
-  'linear-gradient(90deg, #3B7DD8, #6EA8F0)',
-  'linear-gradient(90deg, #7B6FD0, #A99FE8)',
-  'linear-gradient(90deg, #00C0A0, #00DDB8)',
-  'linear-gradient(90deg, #F0883E, #F6B05E)',
-  'linear-gradient(90deg, #E03E5A, #F07090)',
-  'linear-gradient(90deg, #8B59D0, #B08AE8)',
+  { bar: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)', shadow: 'rgba(59,125,216,0.30)' },
+  { bar: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)', shadow: 'rgba(123,111,208,0.30)' },
+  { bar: 'linear-gradient(135deg, #00C0A0 0%, #00DDB8 100%)', shadow: 'rgba(0,192,160,0.30)' },
+  { bar: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)', shadow: 'rgba(240,136,62,0.30)' },
+  { bar: 'linear-gradient(135deg, #E03E5A 0%, #F07090 100%)', shadow: 'rgba(224,62,90,0.30)' },
+  { bar: 'linear-gradient(135deg, #8B59D0 0%, #B08AE8 100%)', shadow: 'rgba(139,89,208,0.30)' },
 ];
-
-const COLORS = ['#3B7DD8', '#7B6FD0', '#00C0A0', '#F0883E', '#E03E5A', '#8B59D0'];
 
 export default function SourceChart({ data }: { data: WeeklySnapshot }) {
   const sources = Object.entries(data.ga4.bySource).sort(([, a], [, b]) => b - a);
@@ -20,7 +40,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 22px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
         Origem dos Visitantes
       </h2>
 
@@ -35,30 +55,89 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {sources.map(([source, value], i) => {
-            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-            const barWidth = total > 0 ? (value / total) * 100 : 0;
+            const pct = total > 0 ? (value / total) * 100 : 0;
+            const style = GRADIENTS[i % GRADIENTS.length];
+            const label = CHANNEL_LABELS[source] ?? source;
+            const icon = CHANNEL_ICONS[source] ?? <Globe size={15} />;
+
             return (
-              <div key={source} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '12px', color: '#8892A6', width: '90px', flexShrink: 0, textAlign: 'right', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {source}
-                </span>
-                <div style={{ flex: 1, height: '32px', background: 'rgba(237,241,251,0.80)', borderRadius: '10px', overflow: 'hidden' }}>
+              <div key={source} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+
+                {/* Gradient bar */}
+                <div style={{
+                  flex: 1,
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: 'rgba(237,241,251,0.80)',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
                   <div style={{
-                    height: '100%', borderRadius: '10px',
-                    background: GRADIENTS[i % GRADIENTS.length],
-                    width: `${barWidth}%`,
-                    boxShadow: `0 3px 10px rgba(0,0,0,0.10)`,
-                    transition: 'width 0.6s ease',
-                  }} />
+                    height: '100%',
+                    width: `${Math.max(pct, 3)}%`,
+                    borderRadius: '12px',
+                    background: style.bar,
+                    boxShadow: `0 4px 14px ${style.shadow}`,
+                    transition: 'width 0.6s cubic-bezier(0.16,1,0.3,1)',
+                    position: 'relative', overflow: 'hidden',
+                  }}>
+                    {/* Shimmer */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0) 100%)',
+                    }} />
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px', width: '72px', flexShrink: 0 }}>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: COLORS[i % COLORS.length] }}>
-                    {value.toLocaleString('pt-BR')}
-                  </span>
-                  <span style={{ fontSize: '11px', color: '#B0BCCE' }}>{pct}%</span>
+
+                {/* Label card */}
+                <div style={{
+                  width: '128px',
+                  height: '48px',
+                  flexShrink: 0,
+                  borderRadius: '14px',
+                  background: style.bar,
+                  boxShadow: `0 6px 18px ${style.shadow}`,
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  padding: '0 10px',
+                  overflow: 'hidden',
+                }}>
+                  {/* Icon badge */}
+                  <div style={{
+                    width: '28px', height: '28px', borderRadius: '8px', flexShrink: 0,
+                    background: 'rgba(255,255,255,0.22)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'white',
+                  }}>
+                    {icon}
+                  </div>
+
+                  {/* Text */}
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{
+                      fontSize: '8px', fontWeight: 700, margin: 0,
+                      color: 'rgba(255,255,255,0.75)',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {label}
+                    </p>
+                    <p style={{
+                      fontSize: '13px', fontWeight: 700, margin: '1px 0 0',
+                      color: 'white', letterSpacing: '-0.3px', lineHeight: 1,
+                    }}>
+                      {value.toLocaleString('pt-BR')}
+                    </p>
+                    <p style={{
+                      fontSize: '9px', margin: '1px 0 0',
+                      color: 'rgba(255,255,255,0.60)',
+                    }}>
+                      {pct.toFixed(1)}%
+                    </p>
+                  </div>
                 </div>
+
               </div>
             );
           })}
