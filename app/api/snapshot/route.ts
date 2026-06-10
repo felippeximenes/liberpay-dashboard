@@ -1,4 +1,4 @@
-import { put } from '@vercel/blob';
+import { put, list } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -14,11 +14,34 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const payload = JSON.stringify(body);
-
-  // Derives week key from "YYYY-MM-DD/YYYY-MM-DD" → end date, fallback to today
+  // Derive week key from "YYYY-MM-DD/YYYY-MM-DD" → end date, fallback to today
   const weekStr = typeof body.week === 'string' ? body.week : '';
   const weekKey = weekStr.includes('/') ? weekStr.split('/')[1] : new Date().toISOString().split('T')[0];
+
+  // Calculate previous week key (7 days before current end date)
+  const prevDate = new Date(weekKey + 'T00:00:00Z');
+  prevDate.setUTCDate(prevDate.getUTCDate() - 7);
+  const prevWeekKey = prevDate.toISOString().split('T')[0];
+
+  // Fetch previous week snapshot from Blob to attach as previousWeek
+  let previousWeek: unknown = null;
+  try {
+    const { blobs } = await list({ prefix: `snapshots/weeks/${prevWeekKey}` });
+    if (blobs.length > 0) {
+      const res = await fetch(blobs[0].url);
+      if (res.ok) {
+        const prevData = await res.json();
+        // Strip nested previousWeek to avoid infinite nesting
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { previousWeek: _nested, ...clean } = prevData;
+        previousWeek = clean;
+      }
+    }
+  } catch {
+    // Proceed without previousWeek if Blob is unavailable
+  }
+
+  const payload = JSON.stringify({ ...body, previousWeek });
 
   const [blob] = await Promise.all([
     put('snapshots/latest.json', payload, {
@@ -29,5 +52,5 @@ export async function POST(request: NextRequest) {
     }),
   ]);
 
-  return NextResponse.json({ success: true, url: blob.url, weekKey });
+  return NextResponse.json({ success: true, url: blob.url, weekKey, prevWeekKey });
 }
