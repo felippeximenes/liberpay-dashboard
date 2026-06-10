@@ -38,6 +38,11 @@ function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatIte
 
 export default function EmailStats({ data }: { data: WeeklySnapshot }) {
   const { mailpoet } = data;
+
+  const newSubscribers = data.previousWeek
+    ? Math.max(0, mailpoet.totalSubscribers - data.previousWeek.mailpoet.totalSubscribers)
+    : mailpoet.newSubscribers;
+
   const rateAccent = mailpoet.openRate < 20 ? '#E03E5A' : '#00C0A0';
   const rateGradient = mailpoet.openRate < 20
     ? 'linear-gradient(135deg, #E03E5A, #F07090)'
@@ -54,7 +59,7 @@ export default function EmailStats({ data }: { data: WeeklySnapshot }) {
         <StatItem
           icon={<UserPlus size={16} />}
           label="Novos assinantes"
-          value={mailpoet.newSubscribers.toLocaleString('pt-BR')}
+          value={newSubscribers.toLocaleString('pt-BR')}
           sub="esta semana"
           accent="#3B7DD8"
           gradient="linear-gradient(135deg, #3B7DD8, #6EA8F0)"
