@@ -35,7 +35,7 @@ Make.com (sexta 08h — America/Sao_Paulo)
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS, Recharts |
+| Frontend | Next.js 14 (App Router), TypeScript, CSS Modules, Lucide React |
 | Backend | Next.js API Routes (Vercel Serverless Functions) |
 | Storage | Vercel Blob (acesso público) |
 | Automação | Make.com (cenário semanal agendado) |
@@ -58,7 +58,7 @@ liberpay-dashboard/
 │           └── route.ts          # GET — lista semanas disponíveis no Blob
 ├── components/
 │   ├── Sidebar.tsx               # Sidebar com seletor de semanas e exportação
-│   ├── FunnelChart.tsx           # Funil de vendas (barras horizontais com gradiente)
+│   ├── FunnelChart.tsx           # Funil de vendas (diagrama de trapézios com labels coloridos)
 │   ├── SourceChart.tsx           # Origem dos visitantes
 │   ├── EmailStats.tsx            # Estatísticas de e-mail marketing
 │   └── WeeklyTable.tsx           # Comparativo semana atual vs anterior
