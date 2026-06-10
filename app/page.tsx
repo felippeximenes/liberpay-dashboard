@@ -4,6 +4,8 @@ import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
 import Sidebar, { WeekEntry } from '@/components/Sidebar';
+import InsightCards from '@/components/InsightCards';
+import WeekNav from '@/components/WeekNav';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -63,6 +65,7 @@ export default async function DashboardPage({
   }
 
   const data = await getSnapshotData(snapshotUrl);
+  const weekLabel = formatWeek(data.week);
 
   const kpis = [
     {
@@ -112,14 +115,7 @@ export default async function DashboardPage({
             <div style={{ background: '#1A56A0', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(26,86,160,0.30)', flexShrink: 0 }}>
               <Image src="/logo.png" alt="LiberPay" width={100} height={28} className="object-contain" />
             </div>
-            <div>
-              <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1A2340', margin: 0, letterSpacing: '-0.3px' }}>
-                Dashboard de Funil
-              </h1>
-              <p style={{ fontSize: '13px', color: '#8892A6', margin: '5px 0 0' }}>
-                {formatWeek(data.week)}
-              </p>
-            </div>
+            <WeekNav weeks={weeks} currentWeek={weekParam} weekLabel={weekLabel} />
           </div>
           <div className="glass" style={{ padding: '12px 20px', textAlign: 'right', flexShrink: 0 }}>
             <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
@@ -156,6 +152,9 @@ export default async function DashboardPage({
             </div>
           ))}
         </div>
+
+        {/* Insights */}
+        <InsightCards data={data} />
 
         {/* Charts */}
         <div className="grid-2col" style={{ marginBottom: '20px' }}>
