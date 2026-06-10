@@ -1,15 +1,17 @@
 'use client';
 
 import { WeeklySnapshot } from '@/types/snapshot';
-import { Clock } from 'lucide-react';
+import { Clock, Users, TrendingUp, Zap, DollarSign } from 'lucide-react';
 
 interface FunnelStep {
   label: string;
+  sublabel: string;
   value: number | null;
-  color: string;
   gradient: string;
   shadow: string;
+  borderColor: string;
   isPending?: boolean;
+  icon: React.ReactNode;
 }
 
 function convRate(from: number, to: number | null): string | null {
@@ -21,90 +23,157 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
   const steps: FunnelStep[] = [
     {
       label: 'Visitantes',
+      sublabel: `${data.ga4.newUsers.toLocaleString('pt-BR')} novos`,
       value: data.ga4.visitors,
-      color: '#3B7DD8',
-      gradient: 'linear-gradient(90deg, #3B7DD8, #6EA8F0)',
-      shadow: 'rgba(59,125,216,0.25)',
+      gradient: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)',
+      shadow: 'rgba(59,125,216,0.30)',
+      borderColor: 'rgba(59,125,216,0.20)',
+      icon: <Users size={15} />,
     },
     {
-      label: 'Leads gerados',
+      label: 'Leads Gerados',
+      sublabel: 'eventos GA4',
       value: data.ga4.leads,
-      color: '#7B6FD0',
-      gradient: 'linear-gradient(90deg, #7B6FD0, #A99FE8)',
-      shadow: 'rgba(123,111,208,0.25)',
+      gradient: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)',
+      shadow: 'rgba(123,111,208,0.30)',
+      borderColor: 'rgba(123,111,208,0.20)',
+      icon: <TrendingUp size={15} />,
     },
     {
-      label: 'Deals criados',
+      label: 'Deals Criados',
+      sublabel: 'Pipedrive',
       value: data.pipedrive.dealsCreated,
-      color: '#00C0A0',
-      gradient: 'linear-gradient(90deg, #00C0A0, #00DDB8)',
-      shadow: 'rgba(0,192,160,0.25)',
+      gradient: 'linear-gradient(135deg, #00C0A0 0%, #00DDB8 100%)',
+      shadow: 'rgba(0,192,160,0.30)',
+      borderColor: 'rgba(0,192,160,0.20)',
+      icon: <Zap size={15} />,
     },
     {
-      label: 'Conversão LiberPay',
+      label: 'Conversão',
+      sublabel: 'LiberPay',
       value: data.conversion.transactions,
-      color: '#F0883E',
-      gradient: 'linear-gradient(90deg, #F0883E, #F6B05E)',
-      shadow: 'rgba(240,136,62,0.25)',
+      gradient: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)',
+      shadow: 'rgba(240,136,62,0.30)',
+      borderColor: 'rgba(240,136,62,0.20)',
       isPending: data.conversion.transactions === null,
+      icon: <DollarSign size={15} />,
     },
   ];
 
-  const maxValue = Math.max(...steps.map((s) => s.value ?? 0));
-
   return (
     <div className="glass" style={{ padding: '24px' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 22px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
         Funil de Vendas
       </h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {steps.map((step, i) => {
-          const prev = steps[i - 1];
+          const prev = i > 0 ? steps[i - 1] : null;
           const rate = prev ? convRate(prev.value ?? 0, step.value) : null;
-          const width = step.isPending
-            ? 25
-            : maxValue > 0
-            ? Math.max(((step.value ?? 0) / maxValue) * 100, 8)
-            : 8;
 
           return (
             <div key={step.label}>
+
+              {/* ── Conversion badge between levels ── */}
               {rate && (
-                <div style={{ display: 'flex', justifyContent: 'center', margin: '0 0 10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginRight: '8px' }} />
                   <span style={{
-                    fontSize: '11px', color: '#A0ABBF', fontWeight: 600,
-                    background: 'rgba(160,171,191,0.12)', padding: '3px 10px',
-                    borderRadius: '20px', letterSpacing: '0.03em',
+                    fontSize: '10px', fontWeight: 700, color: '#8892A6',
+                    background: 'rgba(237,241,251,0.90)',
+                    border: '1px solid rgba(200,211,232,0.50)',
+                    padding: '2px 8px', borderRadius: '20px',
+                    whiteSpace: 'nowrap',
                   }}>
-                    {rate} converteram
+                    ↓ {rate}
                   </span>
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '12px', color: '#8892A6', width: '120px', flexShrink: 0, textAlign: 'right', fontWeight: 500 }}>
-                  {step.label}
-                </span>
-                <div style={{ flex: 1, height: '36px', background: 'rgba(237,241,251,0.80)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
+
+              {/* ── Funnel row: bar + label card ── */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+
+                {/* Funnel bar — left margin increases per level for narrowing effect */}
+                <div style={{
+                  flex: 1,
+                  marginLeft: `${i * 6}%`,
+                  height: '58px',
+                  borderRadius: '12px',
+                  background: step.isPending
+                    ? 'rgba(237,241,251,0.80)'
+                    : step.gradient,
+                  boxShadow: step.isPending ? 'none' : `0 6px 20px ${step.shadow}`,
+                  border: step.isPending ? `1px dashed rgba(200,211,232,0.80)` : 'none',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.6s cubic-bezier(0.16,1,0.3,1)',
+                  position: 'relative', overflow: 'hidden',
+                }}>
+                  {/* Shimmer overlay */}
+                  {!step.isPending && (
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0) 100%)',
+                      borderRadius: '12px',
+                    }} />
+                  )}
+                  {step.isPending && (
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#A0ABBF', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Clock size={12} /> Pendente
+                    </span>
+                  )}
+                </div>
+
+                {/* Label card */}
+                <div style={{
+                  width: '128px',
+                  height: '58px',
+                  flexShrink: 0,
+                  borderRadius: '14px',
+                  background: step.isPending ? 'rgba(237,241,251,0.70)' : step.gradient,
+                  boxShadow: step.isPending ? 'none' : `0 6px 18px ${step.shadow}`,
+                  border: step.isPending ? `1px solid ${step.borderColor}` : 'none',
+                  display: 'flex', alignItems: 'center', gap: '9px',
+                  padding: '0 12px',
+                  overflow: 'hidden',
+                }}>
+                  {/* Icon badge */}
                   <div style={{
-                    height: '100%', borderRadius: '10px',
-                    background: step.isPending ? 'rgba(160,171,191,0.25)' : step.gradient,
-                    width: `${width}%`,
-                    display: 'flex', alignItems: 'center', paddingLeft: '12px',
-                    boxShadow: step.isPending ? 'none' : `0 3px 12px ${step.shadow}`,
-                    transition: 'width 0.6s ease',
+                    width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0,
+                    background: step.isPending ? 'rgba(160,171,191,0.15)' : 'rgba(255,255,255,0.22)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: step.isPending ? '#A0ABBF' : 'white',
                   }}>
-                    {step.isPending && (
-                      <span style={{ fontSize: '11px', fontWeight: 600, color: '#A0ABBF', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
-                        <Clock size={11} /> Pendente
-                      </span>
-                    )}
+                    {step.icon}
+                  </div>
+
+                  {/* Text */}
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{
+                      fontSize: '9px', fontWeight: 700, margin: 0,
+                      color: step.isPending ? '#A0ABBF' : 'rgba(255,255,255,0.75)',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {step.label}
+                    </p>
+                    <p style={{
+                      fontSize: '15px', fontWeight: 700, margin: '2px 0 0',
+                      color: step.isPending ? '#B0BCCE' : 'white',
+                      letterSpacing: '-0.4px', lineHeight: 1,
+                    }}>
+                      {step.isPending ? '—' : (step.value ?? 0).toLocaleString('pt-BR')}
+                    </p>
+                    <p style={{
+                      fontSize: '9px', margin: '2px 0 0',
+                      color: step.isPending ? '#B0BCCE' : 'rgba(255,255,255,0.60)',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {step.sublabel}
+                    </p>
                   </div>
                 </div>
-                {!step.isPending && (
-                  <span style={{ fontSize: '14px', fontWeight: 700, width: '56px', flexShrink: 0, color: step.color, letterSpacing: '-0.3px' }}>
-                    {(step.value ?? 0).toLocaleString('pt-BR')}
-                  </span>
-                )}
+
               </div>
             </div>
           );
