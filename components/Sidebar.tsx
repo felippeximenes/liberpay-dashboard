@@ -30,6 +30,8 @@ function downloadCSV(data: WeeklySnapshot) {
     ['Novos Usuários', data.ga4.newUsers, data.week],
     ['Leads (Eventos)', data.ga4.leads, data.week],
     ['Deals Criados', data.pipedrive.dealsCreated, data.week],
+    ['Deals Ganhos', data.pipedrive.dealsWon, data.week],
+    ['Valor Total (R$)', data.pipedrive.totalValue, data.week],
     ['Total Assinantes', data.mailpoet.totalSubscribers, data.week],
     ['Novos Assinantes', data.mailpoet.newSubscribers, data.week],
     ['Taxa de Abertura (%)', data.mailpoet.openRate, data.week],

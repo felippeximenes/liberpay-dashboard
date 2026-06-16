@@ -1,7 +1,11 @@
 'use client';
 
 import { WeeklySnapshot } from '@/types/snapshot';
-import { Clock, Users, TrendingUp, Zap, DollarSign } from 'lucide-react';
+import { Clock, Users, TrendingUp, Zap, DollarSign, Award } from 'lucide-react';
+
+function formatCurrency(value: number): string {
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+}
 
 interface FunnelStep {
   label: string;
@@ -47,6 +51,15 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       shadow: 'rgba(0,192,160,0.30)',
       borderColor: 'rgba(0,192,160,0.20)',
       icon: <Zap size={15} />,
+    },
+    {
+      label: 'Deals Ganhos',
+      sublabel: data.pipedrive.totalValue > 0 ? formatCurrency(data.pipedrive.totalValue) : 'Pipedrive',
+      value: data.pipedrive.dealsWon,
+      gradient: 'linear-gradient(135deg, #0EA968 0%, #34D399 100%)',
+      shadow: 'rgba(14,169,104,0.30)',
+      borderColor: 'rgba(14,169,104,0.20)',
+      icon: <Award size={15} />,
     },
     {
       label: 'Conversão',

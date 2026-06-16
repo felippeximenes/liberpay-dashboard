@@ -6,11 +6,13 @@ interface Row {
   current: number | null;
   previous: number | null;
   isRate?: boolean;
+  isCurrency?: boolean;
 }
 
-function formatValue(value: number | null, isRate?: boolean): string {
+function formatValue(value: number | null, isRate?: boolean, isCurrency?: boolean): string {
   if (value === null) return '—';
   if (isRate) return `${value.toFixed(1)}%`;
+  if (isCurrency) return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
   return value.toLocaleString('pt-BR');
 }
 
@@ -52,6 +54,8 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
     { label: 'Visitantes', current: data.ga4.visitors, previous: prev?.ga4.visitors ?? null },
     { label: 'Leads', current: data.ga4.leads, previous: prev?.ga4.leads ?? null },
     { label: 'Deals criados', current: data.pipedrive.dealsCreated, previous: prev?.pipedrive.dealsCreated ?? null },
+    { label: 'Deals ganhos', current: data.pipedrive.dealsWon, previous: prev?.pipedrive.dealsWon ?? null },
+    { label: 'Valor total', current: data.pipedrive.totalValue, previous: prev?.pipedrive.totalValue ?? null, isCurrency: true },
     { label: 'Novos assinantes', current: data.mailpoet.newSubscribers, previous: prev?.mailpoet.newSubscribers ?? null },
     { label: 'Taxa de abertura', current: data.mailpoet.openRate, previous: prev?.mailpoet.openRate ?? null, isRate: true },
   ];
@@ -88,10 +92,10 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
                   {row.label}
                 </td>
                 <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', fontWeight: 700, color: '#1A2340', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
-                  {formatValue(row.current, row.isRate)}
+                  {formatValue(row.current, row.isRate, row.isCurrency)}
                 </td>
                 <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', color: '#8892A6', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
-                  {formatValue(row.previous, row.isRate)}
+                  {formatValue(row.previous, row.isRate, row.isCurrency)}
                 </td>
                 <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', borderBottom: cellBorder(i, rows.length) }}>
                   <Delta current={row.current} previous={row.previous} isRate={row.isRate} />
