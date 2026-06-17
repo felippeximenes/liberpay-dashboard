@@ -27,7 +27,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
   const steps: FunnelStep[] = [
     {
       label: 'Sessões',
-      sublabel: `${data.ga4.newUsers.toLocaleString('pt-BR')} novos usuários`,
+      sublabel: `${data.ga4.newUsers.toLocaleString('pt-BR')} novos · Google Analytics`,
       value: data.ga4.visitors,
       gradient: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)',
       shadow: 'rgba(59,125,216,0.30)',
@@ -36,7 +36,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
     },
     {
       label: 'Leads Gerados',
-      sublabel: 'eventos GA4',
+      sublabel: 'evento lead_created · GA4',
       value: data.ga4.leads,
       gradient: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)',
       shadow: 'rgba(123,111,208,0.30)',
@@ -45,7 +45,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
     },
     {
       label: 'Deals Criados',
-      sublabel: 'Pipedrive',
+      sublabel: 'negócios abertos · Pipedrive',
       value: data.pipedrive.dealsCreated,
       gradient: 'linear-gradient(135deg, #00C0A0 0%, #00DDB8 100%)',
       shadow: 'rgba(0,192,160,0.30)',
@@ -54,7 +54,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
     },
     {
       label: 'Deals Ganhos',
-      sublabel: data.pipedrive.totalValue > 0 ? formatCurrency(data.pipedrive.totalValue) : 'Pipedrive',
+      sublabel: data.pipedrive.totalValue > 0 ? `${formatCurrency(data.pipedrive.totalValue)} · Pipedrive` : 'negócios fechados · Pipedrive',
       value: data.pipedrive.dealsWon,
       gradient: 'linear-gradient(135deg, #0EA968 0%, #34D399 100%)',
       shadow: 'rgba(14,169,104,0.30)',
@@ -63,7 +63,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
     },
     {
       label: 'Conversão',
-      sublabel: 'LiberPay',
+      sublabel: 'transações · LiberPay',
       value: data.conversion.transactions,
       gradient: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)',
       shadow: 'rgba(240,136,62,0.30)',
