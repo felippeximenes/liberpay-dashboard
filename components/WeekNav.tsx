@@ -13,7 +13,6 @@ interface WeekNavProps {
 export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps) {
   const router = useRouter();
 
-  // weeks sorted newest-first; -1 = showing latest
   const idx = currentWeek ? weeks.findIndex(w => w.key === currentWeek) : -1;
 
   const canPrev = idx === -1 ? weeks.length > 0 : idx < weeks.length - 1;
@@ -34,8 +33,8 @@ export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps)
   const btn = (active: boolean): React.CSSProperties => ({
     width: '26px', height: '26px', borderRadius: '7px', border: 'none',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: active ? 'rgba(59,125,216,0.12)' : 'rgba(200,211,232,0.25)',
-    color: active ? '#3B7DD8' : '#C8D3E8',
+    background: active ? 'rgba(59,125,216,0.18)' : 'rgba(255,255,255,0.06)',
+    color: active ? '#60A5FA' : '#334155',
     cursor: active ? 'pointer' : 'default',
     flexShrink: 0, padding: 0,
     transition: 'all 0.15s',
@@ -43,14 +42,14 @@ export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps)
 
   return (
     <div>
-      <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.3px' }}>
+      <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#F1F5F9', margin: '0 0 4px', letterSpacing: '-0.3px' }}>
         Dashboard de Funil
       </h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <button style={btn(canPrev)} onClick={goPrev} disabled={!canPrev} title="Semana anterior">
           <ChevronLeft size={13} />
         </button>
-        <p style={{ fontSize: '13px', color: '#8892A6', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: '#64748B', margin: 0 }}>
           {weekLabel}
         </p>
         <button style={btn(canNext)} onClick={goNext} disabled={!canNext} title="Semana seguinte">

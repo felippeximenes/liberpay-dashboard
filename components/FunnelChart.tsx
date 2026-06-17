@@ -75,7 +75,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
         Funil de Vendas
       </h2>
 
@@ -93,7 +93,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
               {/* ── Conversion badge between levels ── */}
               {isInverted ? (
                 <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
-                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginRight: '8px' }} />
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginRight: '8px' }} />
                   <span style={{
                     fontSize: '10px', fontWeight: 600, color: '#F0883E',
                     background: 'rgba(240,136,62,0.08)',
@@ -105,21 +105,21 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   >
                     ⚠ fontes distintas
                   </span>
-                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginLeft: '8px', maxWidth: '20px' }} />
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>
               ) : rate ? (
                 <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
-                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginRight: '8px' }} />
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginRight: '8px' }} />
                   <span style={{
-                    fontSize: '10px', fontWeight: 700, color: '#8892A6',
-                    background: 'rgba(237,241,251,0.90)',
-                    border: '1px solid rgba(200,211,232,0.50)',
+                    fontSize: '10px', fontWeight: 700, color: '#94A3B8',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.12)',
                     padding: '2px 8px', borderRadius: '20px',
                     whiteSpace: 'nowrap',
                   }}>
                     ↓ {rate}
                   </span>
-                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginLeft: '8px', maxWidth: '20px' }} />
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>
               ) : null}
 
@@ -133,10 +133,10 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   height: '58px',
                   borderRadius: '12px',
                   background: step.isPending
-                    ? 'rgba(237,241,251,0.80)'
+                    ? 'rgba(255,255,255,0.06)'
                     : step.gradient,
                   boxShadow: step.isPending ? 'none' : `0 6px 20px ${step.shadow}`,
-                  border: step.isPending ? `1px dashed rgba(200,211,232,0.80)` : 'none',
+                  border: step.isPending ? `1px dashed rgba(255,255,255,0.14)` : 'none',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.6s cubic-bezier(0.16,1,0.3,1)',
                   position: 'relative', overflow: 'hidden',
@@ -162,7 +162,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   height: '58px',
                   flexShrink: 0,
                   borderRadius: '14px',
-                  background: step.isPending ? 'rgba(237,241,251,0.70)' : step.gradient,
+                  background: step.isPending ? 'rgba(255,255,255,0.05)' : step.gradient,
                   boxShadow: step.isPending ? 'none' : `0 6px 18px ${step.shadow}`,
                   border: step.isPending ? `1px solid ${step.borderColor}` : 'none',
                   display: 'flex', alignItems: 'center', gap: '9px',
@@ -174,7 +174,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                     width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0,
                     background: step.isPending ? 'rgba(160,171,191,0.15)' : 'rgba(255,255,255,0.22)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: step.isPending ? '#A0ABBF' : 'white',
+                    color: step.isPending ? '#475569' : 'white',
                   }}>
                     {step.icon}
                   </div>
@@ -191,7 +191,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                     </p>
                     <p style={{
                       fontSize: '15px', fontWeight: 700, margin: '2px 0 0',
-                      color: step.isPending ? '#B0BCCE' : 'white',
+                      color: step.isPending ? '#334155' : 'white',
                       letterSpacing: '-0.4px', lineHeight: 1,
                     }}>
                       {step.isPending ? '—' : (step.value ?? 0).toLocaleString('pt-BR')}

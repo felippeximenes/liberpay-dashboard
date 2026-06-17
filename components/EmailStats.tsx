@@ -13,7 +13,7 @@ interface StatItemProps {
 
 function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatItemProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 0', borderBottom: '1px solid rgba(237,241,251,0.90)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 0', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
       <div style={{
         width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
         background: gradient, color: 'white',
@@ -24,10 +24,10 @@ function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatIte
       </div>
       {/* minWidth: 0 allows this flex child to shrink below its content size */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: '11px', color: '#A0ABBF', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <p style={{ fontSize: '11px', color: '#64748B', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {label}
         </p>
-        {sub && <p style={{ fontSize: '11px', color: '#B0BCCE', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</p>}
+        {sub && <p style={{ fontSize: '11px', color: '#475569', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</p>}
       </div>
       <span style={{ fontSize: '17px', fontWeight: 700, color: accent, letterSpacing: '-0.3px', flexShrink: 0 }}>
         {value}
@@ -51,10 +51,10 @@ export default function EmailStats({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px', overflow: 'hidden' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
         Email Marketing
       </h2>
-      <p style={{ fontSize: '12px', color: '#A0ABBF', margin: '0 0 4px' }}>MailPoet</p>
+      <p style={{ fontSize: '12px', color: '#64748B', margin: '0 0 4px' }}>MailPoet</p>
       <div>
         <StatItem
           icon={<UserPlus size={16} />}

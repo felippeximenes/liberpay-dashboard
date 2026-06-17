@@ -66,7 +66,7 @@ function SectionHeader({ label, pct, color }: { label: string; pct: number; colo
       <span style={{ fontSize: '10px', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         {label}
       </span>
-      <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)' }} />
+      <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)' }} />
       <span style={{ fontSize: '10px', fontWeight: 700, color, background: `${color}18`, border: `1px solid ${color}40`, padding: '1px 7px', borderRadius: '20px' }}>
         {pct.toFixed(0)}%
       </span>
@@ -85,7 +85,7 @@ function ChannelRow({ source, value, pct, gradient, isPaid }: {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
       {/* Bar */}
-      <div style={{ flex: 1, height: '56px', borderRadius: '12px', background: 'rgba(237,241,251,0.80)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, height: '56px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden', position: 'relative' }}>
         <div style={{
           height: '100%', width: `${Math.max(pct, 2)}%`, borderRadius: '12px',
           background: gradient.bar, boxShadow: `0 4px 14px ${gradient.shadow}`,
@@ -151,7 +151,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
   return (
     <div className="glass" style={{ padding: '24px' }}>
       {/* Header */}
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 14px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 14px', letterSpacing: '-0.2px' }}>
         Origem dos Visitantes
       </h2>
 
@@ -160,8 +160,8 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
           <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(59,125,216,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BarChart2 size={22} color="#3B7DD8" />
           </div>
-          <p style={{ fontSize: '13px', fontWeight: 600, color: '#8892A6', margin: 0 }}>Dados disponíveis em breve</p>
-          <p style={{ fontSize: '12px', color: '#B0BCCE', margin: 0, textAlign: 'center', maxWidth: '200px' }}>
+          <p style={{ fontSize: '13px', fontWeight: 600, color: '#64748B', margin: 0 }}>Dados disponíveis em breve</p>
+          <p style={{ fontSize: '12px', color: '#475569', margin: 0, textAlign: 'center', maxWidth: '200px' }}>
             Serão preenchidos na próxima execução da automação
           </p>
         </div>
@@ -170,14 +170,14 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
           {/* Summary pills */}
           {total > 0 && (
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#3B7DD8', background: 'rgba(59,125,216,0.09)', border: '1px solid rgba(59,125,216,0.22)', padding: '4px 10px', borderRadius: '20px' }}>
-                💰 Pago {pct(paidTotal).toFixed(0)}%
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#60A5FA', background: 'rgba(59,125,216,0.15)', border: '1px solid rgba(59,125,216,0.30)', padding: '4px 10px', borderRadius: '20px' }}>
+                Pago {pct(paidTotal).toFixed(0)}%
               </span>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#00966A', background: 'rgba(0,192,160,0.09)', border: '1px solid rgba(0,192,160,0.25)', padding: '4px 10px', borderRadius: '20px' }}>
-                🌿 Orgânico {pct(organicTotal).toFixed(0)}%
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#34D399', background: 'rgba(0,192,160,0.15)', border: '1px solid rgba(0,192,160,0.30)', padding: '4px 10px', borderRadius: '20px' }}>
+                Orgânico {pct(organicTotal).toFixed(0)}%
               </span>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#6E7A90', background: 'rgba(136,146,166,0.09)', border: '1px solid rgba(136,146,166,0.25)', padding: '4px 10px', borderRadius: '20px' }}>
-                🔗 Direto/Outros {pct(otherTotal).toFixed(0)}%
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', background: 'rgba(148,163,184,0.12)', border: '1px solid rgba(148,163,184,0.22)', padding: '4px 10px', borderRadius: '20px' }}>
+                Direto/Outros {pct(otherTotal).toFixed(0)}%
               </span>
             </div>
           )}
@@ -187,7 +187,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
             <div style={{ display: 'flex', height: '6px', borderRadius: '6px', overflow: 'hidden', marginBottom: '4px', gap: '2px' }}>
               <div style={{ width: `${pct(paidTotal)}%`, background: 'linear-gradient(90deg, #3B7DD8, #6EA8F0)', borderRadius: '6px 0 0 6px', transition: 'width 0.6s ease' }} />
               <div style={{ width: `${pct(organicTotal)}%`, background: 'linear-gradient(90deg, #00C0A0, #00DDB8)', transition: 'width 0.6s ease' }} />
-              <div style={{ flex: 1, background: 'rgba(200,211,232,0.50)', borderRadius: '0 6px 6px 0' }} />
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.08)', borderRadius: '0 6px 6px 0' }} />
             </div>
           )}
 

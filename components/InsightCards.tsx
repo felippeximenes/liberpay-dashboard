@@ -24,10 +24,10 @@ const CHANNEL_LABELS: Record<string, string> = {
 };
 
 const STYLES: Record<Level, { border: string; bg: string; iconBg: string; iconColor: string; titleColor: string }> = {
-  success: { border: '#00C0A0', bg: 'rgba(0,192,160,0.06)',  iconBg: 'rgba(0,192,160,0.14)',  iconColor: '#00C0A0', titleColor: '#007A66' },
-  warning: { border: '#F0883E', bg: 'rgba(240,136,62,0.06)', iconBg: 'rgba(240,136,62,0.14)', iconColor: '#F0883E', titleColor: '#B85C1A' },
-  danger:  { border: '#E03E5A', bg: 'rgba(224,62,90,0.06)',  iconBg: 'rgba(224,62,90,0.14)',  iconColor: '#E03E5A', titleColor: '#A01830' },
-  info:    { border: '#3B7DD8', bg: 'rgba(59,125,216,0.06)', iconBg: 'rgba(59,125,216,0.14)', iconColor: '#3B7DD8', titleColor: '#1A4D9A' },
+  success: { border: '#00C0A0', bg: 'rgba(0,192,160,0.08)',  iconBg: 'rgba(0,192,160,0.16)',  iconColor: '#34D399', titleColor: '#34D399' },
+  warning: { border: '#F0883E', bg: 'rgba(240,136,62,0.08)', iconBg: 'rgba(240,136,62,0.16)', iconColor: '#FB923C', titleColor: '#FB923C' },
+  danger:  { border: '#E03E5A', bg: 'rgba(224,62,90,0.08)',  iconBg: 'rgba(224,62,90,0.16)',  iconColor: '#F87171', titleColor: '#F87171' },
+  info:    { border: '#3B7DD8', bg: 'rgba(59,125,216,0.08)', iconBg: 'rgba(59,125,216,0.16)', iconColor: '#60A5FA', titleColor: '#60A5FA' },
 };
 
 function buildInsights(data: WeeklySnapshot): Insight[] {
@@ -99,7 +99,7 @@ export default function InsightCards({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div style={{ marginBottom: '20px' }}>
-      <p style={{ fontSize: '11px', fontWeight: 700, color: '#A0ABBF', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <p style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         Insights da Semana
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '10px' }}>
@@ -122,7 +122,7 @@ export default function InsightCards({ data }: { data: WeeklySnapshot }) {
                       </span>
                     )}
                   </div>
-                  <p style={{ fontSize: '11px', color: '#8892A6', margin: 0, lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '11px', color: '#94A3B8', margin: 0, lineHeight: 1.5 }}>
                     {insight.body}
                   </p>
                 </div>

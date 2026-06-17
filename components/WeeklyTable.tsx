@@ -45,7 +45,7 @@ function Delta({ current, previous, isRate }: { current: number | null; previous
 }
 
 const cellBorder = (i: number, total: number) =>
-  i < total - 1 ? '1px solid rgba(237,241,251,0.90)' : 'none';
+  i < total - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none';
 
 export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
   const prev = data.previousWeek;
@@ -62,10 +62,10 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px', overflow: 'hidden' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
         Comparativo Semanal
       </h2>
-      <p style={{ fontSize: '12px', color: '#A0ABBF', margin: '0 0 18px' }}>vs. semana anterior</p>
+      <p style={{ fontSize: '12px', color: '#64748B', margin: '0 0 18px' }}>vs. semana anterior</p>
 
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as 'auto', marginRight: '-4px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '320px' }}>
@@ -75,9 +75,9 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
                 <th key={h} style={{
                   textAlign: i === 0 ? 'left' : 'right',
                   padding: i === 0 ? '0 8px 12px 0' : '0 0 12px 8px',
-                  color: '#A0ABBF', fontWeight: 600, fontSize: '11px',
+                  color: '#64748B', fontWeight: 600, fontSize: '11px',
                   textTransform: 'uppercase', letterSpacing: '0.07em',
-                  borderBottom: '1px solid rgba(237,241,251,0.90)',
+                  borderBottom: '1px solid rgba(255,255,255,0.07)',
                   whiteSpace: 'nowrap',
                 }}>
                   {h}
@@ -88,13 +88,13 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
           <tbody>
             {rows.map((row, i) => (
               <tr key={row.label}>
-                <td style={{ padding: '11px 8px 11px 0', fontWeight: 600, color: '#1A2340', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
+                <td style={{ padding: '11px 8px 11px 0', fontWeight: 600, color: '#E2E8F0', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
                   {row.label}
                 </td>
-                <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', fontWeight: 700, color: '#1A2340', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
+                <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', fontWeight: 700, color: '#E2E8F0', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
                   {formatValue(row.current, row.isRate, row.isCurrency)}
                 </td>
-                <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', color: '#8892A6', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
+                <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', color: '#94A3B8', borderBottom: cellBorder(i, rows.length), whiteSpace: 'nowrap' }}>
                   {formatValue(row.previous, row.isRate, row.isCurrency)}
                 </td>
                 <td style={{ padding: '11px 0 11px 8px', textAlign: 'right', borderBottom: cellBorder(i, rows.length) }}>
