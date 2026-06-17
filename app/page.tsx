@@ -135,8 +135,8 @@ export default async function DashboardPage({
 
         {/* Header */}
         <div className="header-row">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ background: '#1A3A70', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(26,58,112,0.50)', flexShrink: 0, border: '1px solid rgba(59,125,216,0.30)' }}>
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: '12px' }}>
+            <div style={{ background: '#1A3A70', borderRadius: '12px', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(26,58,112,0.50)', flexShrink: 0, border: '1px solid rgba(59,125,216,0.30)' }}>
               <Image src="/logo.png" alt="LiberPay" width={100} height={28} className="object-contain" />
             </div>
             <WeekNav weeks={weeks} currentWeek={weekParam} weekLabel={weekLabel} />
