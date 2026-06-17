@@ -26,8 +26,8 @@ function convRate(from: number, to: number | null): string | null {
 export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
   const steps: FunnelStep[] = [
     {
-      label: 'Visitantes',
-      sublabel: `${data.ga4.newUsers.toLocaleString('pt-BR')} novos`,
+      label: 'Sessões',
+      sublabel: `${data.ga4.newUsers.toLocaleString('pt-BR')} novos usuários`,
       value: data.ga4.visitors,
       gradient: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)',
       shadow: 'rgba(59,125,216,0.30)',
@@ -82,13 +82,32 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {steps.map((step, i) => {
           const prev = i > 0 ? steps[i - 1] : null;
-          const rate = prev ? convRate(prev.value ?? 0, step.value) : null;
+          const prevVal = prev?.value ?? 0;
+          const currVal = step.value ?? 0;
+          const isInverted = prev !== null && !step.isPending && prevVal > 0 && currVal > prevVal;
+          const rate = prev && !isInverted ? convRate(prevVal, step.value) : null;
 
           return (
             <div key={step.label}>
 
               {/* ── Conversion badge between levels ── */}
-              {rate && (
+              {isInverted ? (
+                <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginRight: '8px' }} />
+                  <span style={{
+                    fontSize: '10px', fontWeight: 600, color: '#F0883E',
+                    background: 'rgba(240,136,62,0.08)',
+                    border: '1px solid rgba(240,136,62,0.30)',
+                    padding: '2px 8px', borderRadius: '20px',
+                    whiteSpace: 'nowrap',
+                  }}
+                    title="Etapas de sistemas diferentes — GA4 e Pipedrive usam definições distintas de lead/deal e podem ter datas ligeiramente diferentes."
+                  >
+                    ⚠ fontes distintas
+                  </span>
+                  <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginLeft: '8px', maxWidth: '20px' }} />
+                </div>
+              ) : rate ? (
                 <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
                   <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginRight: '8px' }} />
                   <span style={{
@@ -102,7 +121,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   </span>
                   <div style={{ flex: 1, height: '1px', background: 'rgba(200,211,232,0.50)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>
-              )}
+              ) : null}
 
               {/* ── Funnel row: bar + label card ── */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

@@ -1,7 +1,8 @@
 import { WeeklySnapshot } from '@/types/snapshot';
-import { BarChart2, Globe, Search, TrendingUp, HelpCircle, Link, CreditCard, Users, Play, Megaphone } from 'lucide-react';
+import { BarChart2, Globe, Search, TrendingUp, HelpCircle, Link, CreditCard, Users, Play, Megaphone, Layers } from 'lucide-react';
 
 const CHANNEL_LABELS: Record<string, string> = {
+  'Cross-network': 'Multi-canal Pago',
   'Direct': 'Acesso Direto',
   'Organic Search': 'Busca Orgânica',
   'Paid Social': 'Social Pago',
@@ -13,7 +14,23 @@ const CHANNEL_LABELS: Record<string, string> = {
   'Organic Video': 'Vídeo Orgânico',
 };
 
+const CHANNEL_TOOLTIPS: Record<string, string> = {
+  'Cross-network': 'Google Ads distribuído em múltiplos canais ao mesmo tempo (Performance Max, Display, parceiros, mídia programática). É tráfego PAGO — não orgânico.',
+  'Direct': 'Visitantes que digitaram a URL diretamente, vieram de favoritos ou cuja origem não pôde ser rastreada.',
+  'Organic Search': 'Cliques em resultados orgânicos de buscadores (Google, Bing) — sem custo por clique.',
+  'Paid Search': 'Cliques em anúncios de busca paga (Google Ads, Bing Ads).',
+  'Paid Social': 'Anúncios pagos em redes sociais (Instagram, Facebook, TikTok etc.).',
+  'Paid Other': 'Outros formatos de mídia paga não categorizados acima.',
+  'Referral': 'Visitantes vindos de links em outros sites ou plataformas.',
+  'Organic Social': 'Posts orgânicos (não patrocinados) em redes sociais.',
+  'Unassigned': 'Canal não identificado pelo GA4.',
+  'Organic Video': 'Visitas originadas de vídeos orgânicos (YouTube etc.).',
+};
+
+const PAID_CHANNELS = new Set(['Cross-network', 'Paid Social', 'Paid Search', 'Paid Other']);
+
 const CHANNEL_ICONS: Record<string, React.ReactNode> = {
+  'Cross-network': <Layers size={15} />,
   'Direct': <Globe size={15} />,
   'Organic Search': <Search size={15} />,
   'Paid Social': <Megaphone size={15} />,
@@ -37,12 +54,21 @@ const GRADIENTS = [
 export default function SourceChart({ data }: { data: WeeklySnapshot }) {
   const sources = Object.entries(data.ga4.bySource).sort(([, a], [, b]) => b - a);
   const total = sources.reduce((sum, [, v]) => sum + v, 0);
+  const paidTotal = sources.filter(([s]) => PAID_CHANNELS.has(s)).reduce((sum, [, v]) => sum + v, 0);
+  const paidPct = total > 0 ? (paidTotal / total) * 100 : 0;
 
   return (
     <div className="glass" style={{ padding: '24px' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
-        Origem dos Visitantes
-      </h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#1A2340', margin: 0, letterSpacing: '-0.2px' }}>
+          Origem dos Visitantes
+        </h2>
+        {total > 0 && (
+          <span style={{ fontSize: '11px', fontWeight: 600, color: '#3B7DD8', background: 'rgba(59,125,216,0.08)', border: '1px solid rgba(59,125,216,0.18)', padding: '3px 8px', borderRadius: '20px' }}>
+            {paidPct.toFixed(0)}% pago
+          </span>
+        )}
+      </div>
 
       {sources.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '200px', gap: '12px' }}>
@@ -62,8 +88,11 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
             const label = CHANNEL_LABELS[source] ?? source;
             const icon = CHANNEL_ICONS[source] ?? <Globe size={15} />;
 
+            const tooltip = CHANNEL_TOOLTIPS[source];
+            const isPaid = PAID_CHANNELS.has(source);
+
             return (
-              <div key={source} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div key={source} style={{ display: 'flex', alignItems: 'center', gap: '10px' }} title={tooltip}>
 
                 {/* Gradient bar */}
                 <div style={{
@@ -115,14 +144,21 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
 
                   {/* Text */}
                   <div style={{ minWidth: 0 }}>
-                    <p style={{
-                      fontSize: '8px', fontWeight: 700, margin: 0,
-                      color: 'rgba(255,255,255,0.75)',
-                      textTransform: 'uppercase', letterSpacing: '0.06em',
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    }}>
-                      {label}
-                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <p style={{
+                        fontSize: '8px', fontWeight: 700, margin: 0,
+                        color: 'rgba(255,255,255,0.75)',
+                        textTransform: 'uppercase', letterSpacing: '0.06em',
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>
+                        {label}
+                      </p>
+                      {isPaid && (
+                        <span style={{ fontSize: '6px', fontWeight: 800, color: 'rgba(255,255,255,0.90)', background: 'rgba(255,255,255,0.20)', borderRadius: '4px', padding: '1px 3px', flexShrink: 0, letterSpacing: '0.04em' }}>
+                          PAGO
+                        </span>
+                      )}
+                    </div>
                     <p style={{
                       fontSize: '13px', fontWeight: 700, margin: '1px 0 0',
                       color: 'white', letterSpacing: '-0.3px', lineHeight: 1,

@@ -43,6 +43,8 @@ function buildInsights(data: WeeklySnapshot): Insight[] {
 
   if (convRate === null) {
     insights.push({ title: 'Sem leads registrados', body: 'Nenhum evento de lead captado pelo GA4 nesta semana.', level: 'warning', icon: <Target size={15} />, metric: '—' });
+  } else if (convRate > 100) {
+    insights.push({ title: 'Leads vs Deals: fontes diferentes', body: `GA4 registrou ${data.ga4.leads} leads e o Pipedrive tem ${data.pipedrive.dealsCreated} deals criados — são contagens de sistemas distintos e não formam uma taxa de conversão direta.`, level: 'info', icon: <Info size={15} />, metric: '—' });
   } else if (convRate < 1) {
     insights.push({ title: 'Conversão crítica', body: `${convRate.toFixed(2)}% dos leads viraram deals — muito abaixo da meta de 5%.`, level: 'danger', icon: <AlertTriangle size={15} />, metric: `${convRate.toFixed(2)}%` });
   } else if (convRate < 5) {
@@ -51,9 +53,9 @@ function buildInsights(data: WeeklySnapshot): Insight[] {
     insights.push({ title: 'Conversão dentro da meta', body: `${convRate.toFixed(1)}% dos leads viraram deals no Pipedrive.`, level: 'success', icon: <CheckCircle size={15} />, metric: `${convRate.toFixed(1)}%` });
   }
 
-  // 2 — Mídia paga
+  // 2 — Mídia paga (Cross-network = Google multi-canal = pago)
   if (hasBySource && total > 0) {
-    const paidVisits = (bySource['Paid Social'] ?? 0) + (bySource['Paid Search'] ?? 0) + (bySource['Paid Other'] ?? 0);
+    const paidVisits = (bySource['Cross-network'] ?? 0) + (bySource['Paid Social'] ?? 0) + (bySource['Paid Search'] ?? 0) + (bySource['Paid Other'] ?? 0);
     const paidPct = (paidVisits / total) * 100;
     if (paidVisits === 0) {
       insights.push({ title: 'Mídia paga sem visitas', body: 'Nenhuma sessão registrada de canais pagos nesta semana.', level: 'warning', icon: <Zap size={15} />, metric: '0%' });
