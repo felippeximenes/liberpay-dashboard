@@ -1,5 +1,5 @@
 import { WeeklySnapshot } from '@/types/snapshot';
-import { CheckCircle, AlertTriangle, XCircle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 
 type Status = 'good' | 'warning' | 'bad';
 
