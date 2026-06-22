@@ -179,14 +179,12 @@ export default async function DashboardPage({
           ))}
         </div>
 
-        {/* Comparativo de semanas — aparece quando há dados da semana anterior */}
-        {data.previousWeek && (
-          <WeekComparison
-            current={data}
-            previous={data.previousWeek}
-            isHistorical={!!weekParam}
-          />
-        )}
+        {/* Comparativo de semanas — seleção manual */}
+        <WeekComparison
+          current={data}
+          weeks={weeks}
+          currentWeekKey={weekParam}
+        />
 
         {/* Insights */}
         <InsightCards data={data} />
