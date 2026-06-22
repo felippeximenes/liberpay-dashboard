@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { LayoutDashboard, Calendar, Download, Settings, FileText, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Calendar, Download, FileText, ChevronRight } from 'lucide-react';
 import { WeeklySnapshot } from '@/types/snapshot';
 
 export interface WeekEntry {
@@ -197,9 +197,6 @@ export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
         <NavIcon icon={<LayoutDashboard size={20} />} active={panel === null} onClick={() => setPanel(null)} />
         <NavIcon icon={<Calendar size={20} />} active={panel === 'weeks'} onClick={() => toggle('weeks')} />
         <NavIcon icon={<Download size={20} />} active={panel === 'export'} onClick={() => toggle('export')} />
-        <div style={{ marginTop: 'auto', marginBottom: '8px' }}>
-          <NavIcon icon={<Settings size={20} />} active={false} onClick={() => {}} />
-        </div>
       </aside>
 
       {/* ── Mobile bottom nav ── */}
@@ -207,7 +204,6 @@ export default function Sidebar({ weeks, currentWeek, data }: SidebarProps) {
         <NavIcon icon={<LayoutDashboard size={22} />} active={panel === null} onClick={() => setPanel(null)} />
         <NavIcon icon={<Calendar size={22} />} active={panel === 'weeks'} onClick={() => toggle('weeks')} />
         <NavIcon icon={<Download size={22} />} active={panel === 'export'} onClick={() => toggle('export')} />
-        <NavIcon icon={<Settings size={22} />} active={false} onClick={() => {}} />
       </nav>
 
       {/* ── Panels ── */}
