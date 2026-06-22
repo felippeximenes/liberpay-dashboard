@@ -6,6 +6,7 @@ import WeeklyTable from '@/components/WeeklyTable';
 import Sidebar, { WeekEntry } from '@/components/Sidebar';
 import InsightCards from '@/components/InsightCards';
 import WeekNav from '@/components/WeekNav';
+import WeekComparison from '@/components/WeekComparison';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -177,6 +178,15 @@ export default async function DashboardPage({
             </div>
           ))}
         </div>
+
+        {/* Comparativo de semanas — aparece quando há dados da semana anterior */}
+        {data.previousWeek && (
+          <WeekComparison
+            current={data}
+            previous={data.previousWeek}
+            isHistorical={!!weekParam}
+          />
+        )}
 
         {/* Insights */}
         <InsightCards data={data} />
