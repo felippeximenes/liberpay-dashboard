@@ -18,10 +18,17 @@ interface FunnelStep {
   icon: React.ReactNode;
 }
 
-function convRate(from: number, to: number | null): string | null {
+function convRate(from: number, to: number | null): number | null {
   if (to === null || from === 0) return null;
-  return ((to / from) * 100).toFixed(1) + '%';
+  return (to / from) * 100;
 }
+
+// Meta de conversão entre cada etapa (índice = step destino)
+const CONV_TARGETS: Record<number, { pct: number; label: string }> = {
+  1: { pct: 3,  label: 'meta: 3% visitantes viram leads' },
+  2: { pct: 30, label: 'meta: 30% leads viram deals' },
+  3: { pct: 20, label: 'meta: 20% deals fechados' },
+};
 
 export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
   const steps: FunnelStep[] = [
@@ -75,9 +82,12 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 20px', letterSpacing: '-0.2px' }}>
-        Funil de Vendas
-      </h2>
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 2px', letterSpacing: '-0.2px' }}>
+          Funil de Vendas
+        </h2>
+        <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>Quantas pessoas chegaram até a compra?</p>
+      </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {steps.map((step, i) => {
@@ -85,7 +95,13 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
           const prevVal = prev?.value ?? 0;
           const currVal = step.value ?? 0;
           const isInverted = prev !== null && !step.isPending && prevVal > 0 && currVal > prevVal;
-          const rate = prev && !isInverted ? convRate(prevVal, step.value) : null;
+          const rateNum = prev && !isInverted ? convRate(prevVal, step.value) : null;
+          const target = CONV_TARGETS[i];
+          const rateColor = rateNum === null || !target
+            ? '#94A3B8'
+            : rateNum >= target.pct ? '#34D399'
+            : rateNum >= target.pct * 0.5 ? '#FCD34D'
+            : '#F87171';
 
           return (
             <div key={step.label}>
@@ -107,17 +123,19 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   </span>
                   <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>
-              ) : rate ? (
+              ) : rateNum !== null ? (
                 <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0', paddingLeft: `calc(${i * 6}% + 4px)` }}>
                   <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginRight: '8px' }} />
                   <span style={{
-                    fontSize: '10px', fontWeight: 700, color: '#94A3B8',
+                    fontSize: '10px', fontWeight: 700, color: rateColor,
                     background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
+                    border: `1px solid ${rateColor}44`,
                     padding: '2px 8px', borderRadius: '20px',
                     whiteSpace: 'nowrap',
-                  }}>
-                    ↓ {rate}
+                  }}
+                    title={target?.label}
+                  >
+                    ↓ {rateNum.toFixed(1)}%{target ? ` · meta: ${target.pct}%` : ''}
                   </span>
                   <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.10)', marginLeft: '8px', maxWidth: '20px' }} />
                 </div>

@@ -51,10 +51,12 @@ export default function EmailStats({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px', overflow: 'hidden' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
-        Email Marketing
-      </h2>
-      <p style={{ fontSize: '12px', color: '#64748B', margin: '0 0 4px' }}>MailPoet</p>
+      <div style={{ marginBottom: '4px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 2px', letterSpacing: '-0.2px' }}>
+          Email Marketing
+        </h2>
+        <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>A lista de e-mail está crescendo? · MailPoet</p>
+      </div>
       <div>
         <StatItem
           icon={<UserPlus size={16} />}

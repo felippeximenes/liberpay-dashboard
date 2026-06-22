@@ -151,9 +151,12 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
   return (
     <div className="glass" style={{ padding: '24px' }}>
       {/* Header */}
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 14px', letterSpacing: '-0.2px' }}>
-        Origem dos Visitantes
-      </h2>
+      <div style={{ marginBottom: '14px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 2px', letterSpacing: '-0.2px' }}>
+          Origem dos Visitantes
+        </h2>
+        <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>De onde veio quem visitou o site esta semana?</p>
+      </div>
 
       {allEntries.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '200px', gap: '12px' }}>

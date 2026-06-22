@@ -7,6 +7,7 @@ import Sidebar, { WeekEntry } from '@/components/Sidebar';
 import InsightCards from '@/components/InsightCards';
 import WeekNav from '@/components/WeekNav';
 import WeekComparison from '@/components/WeekComparison';
+import ExecutiveSummary from '@/components/ExecutiveSummary';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -49,6 +50,40 @@ function formatWeek(week: string): string {
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
   };
   return `${fmt(start)} — ${fmt(end)}`;
+}
+
+type Health = 'good' | 'warning' | 'bad' | 'neutral';
+
+function healthFromDelta(current: number | null, previous: number | null | undefined, zeroIsBad = false): Health {
+  if (current === null) return 'neutral';
+  if (zeroIsBad && current === 0) return 'bad';
+  if (!previous || previous === 0) return 'neutral';
+  const d = ((current - previous) / previous) * 100;
+  if (d >= 5)   return 'good';
+  if (d >= -10) return 'warning';
+  return 'bad';
+}
+
+const HEALTH_DOT: Record<Health, { color: string; label: string }> = {
+  good:    { color: '#34D399', label: 'Bom' },
+  warning: { color: '#FCD34D', label: 'Atenção' },
+  bad:     { color: '#F87171', label: 'Alerta' },
+  neutral: { color: '#334155', label: '—' },
+};
+
+function HealthDot({ health }: { health: Health }) {
+  const h = HEALTH_DOT[health];
+  return (
+    <span
+      title={h.label}
+      style={{
+        position: 'absolute', top: '14px', right: '14px',
+        width: '8px', height: '8px', borderRadius: '50%',
+        background: h.color,
+        boxShadow: health !== 'neutral' ? `0 0 6px ${h.color}` : 'none',
+      }}
+    />
+  );
 }
 
 function DeltaBadge({ current, previous }: { current: number | null; previous: number | null | undefined }) {
@@ -97,6 +132,7 @@ export default async function DashboardPage({
       gradient: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)',
       shadow: 'rgba(59,125,216,0.35)',
       icon: <Eye size={18} />,
+      health: healthFromDelta(data.ga4.visitors, prev?.ga4.visitors),
     },
     {
       label: 'Leads gerados',
@@ -106,6 +142,7 @@ export default async function DashboardPage({
       gradient: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)',
       shadow: 'rgba(123,111,208,0.35)',
       icon: <TrendingUp size={18} />,
+      health: healthFromDelta(data.ga4.leads, prev?.ga4.leads, true),
     },
     {
       label: 'Deals criados',
@@ -115,6 +152,7 @@ export default async function DashboardPage({
       gradient: 'linear-gradient(135deg, #00C0A0 0%, #00DDB8 100%)',
       shadow: 'rgba(0,192,160,0.35)',
       icon: <Zap size={18} />,
+      health: healthFromDelta(data.pipedrive.dealsCreated, prev?.pipedrive.dealsCreated),
     },
     {
       label: 'Assinantes',
@@ -124,6 +162,7 @@ export default async function DashboardPage({
       gradient: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)',
       shadow: 'rgba(240,136,62,0.35)',
       icon: <Users size={18} />,
+      health: healthFromDelta(data.mailpoet.totalSubscribers, prev?.mailpoet.totalSubscribers),
     },
   ];
 
@@ -155,10 +194,14 @@ export default async function DashboardPage({
           </div>
         </div>
 
+        {/* Resumo executivo automático */}
+        <ExecutiveSummary data={data} />
+
         {/* KPI Cards */}
         <div className="grid-kpi">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="glass" style={{ padding: '22px' }}>
+            <div key={kpi.label} className="glass" style={{ padding: '22px', position: 'relative' }}>
+              <HealthDot health={kpi.health} />
               <div style={{
                 width: '40px', height: '40px', borderRadius: '12px',
                 background: kpi.gradient, color: 'white',

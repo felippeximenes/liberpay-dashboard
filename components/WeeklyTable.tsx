@@ -62,10 +62,12 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
 
   return (
     <div className="glass" style={{ padding: '24px', overflow: 'hidden' }}>
-      <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 4px', letterSpacing: '-0.2px' }}>
-        Comparativo Semanal
-      </h2>
-      <p style={{ fontSize: '12px', color: '#64748B', margin: '0 0 18px' }}>vs. semana anterior</p>
+      <div style={{ marginBottom: '18px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#E2E8F0', margin: '0 0 2px', letterSpacing: '-0.2px' }}>
+          Comparativo Semanal
+        </h2>
+        <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>O que mudou vs. semana anterior?</p>
+      </div>
 
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as 'auto', marginRight: '-4px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '320px' }}>
