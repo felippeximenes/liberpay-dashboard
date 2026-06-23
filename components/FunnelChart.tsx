@@ -1,7 +1,7 @@
 'use client';
 
 import { WeeklySnapshot } from '@/types/snapshot';
-import { Clock, Users, TrendingUp, Zap, DollarSign, Award } from 'lucide-react';
+import { Clock, Users, TrendingUp, Zap, Award } from 'lucide-react';
 
 function formatCurrency(value: number): string {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
@@ -67,16 +67,6 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       shadow: 'rgba(14,169,104,0.30)',
       borderColor: 'rgba(14,169,104,0.20)',
       icon: <Award size={15} />,
-    },
-    {
-      label: 'Conversão',
-      sublabel: 'transações · LiberPay',
-      value: data.conversion.transactions,
-      gradient: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)',
-      shadow: 'rgba(240,136,62,0.30)',
-      borderColor: 'rgba(240,136,62,0.20)',
-      isPending: data.conversion.transactions === null,
-      icon: <DollarSign size={15} />,
     },
   ];
 

@@ -4,7 +4,6 @@ import SourceChart from '@/components/SourceChart';
 import EmailStats from '@/components/EmailStats';
 import WeeklyTable from '@/components/WeeklyTable';
 import Sidebar, { WeekEntry } from '@/components/Sidebar';
-import InsightCards from '@/components/InsightCards';
 import WeekNav from '@/components/WeekNav';
 import WeekComparison from '@/components/WeekComparison';
 import ExecutiveSummary from '@/components/ExecutiveSummary';
@@ -198,6 +197,19 @@ export default async function DashboardPage({
         <ExecutiveSummary data={data} />
 
         {/* KPI Cards */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+          <p style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Indicadores da semana
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {([['good', '#34D399', 'Bom'], ['warning', '#FCD34D', 'Atenção'], ['bad', '#F87171', 'Alerta']] as const).map(([, color, label]) => (
+              <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#475569' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, boxShadow: `0 0 5px ${color}`, flexShrink: 0, display: 'inline-block' }} />
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="grid-kpi">
           {kpis.map((kpi) => (
             <div key={kpi.label} className="glass" style={{ padding: '22px', position: 'relative' }}>
@@ -222,16 +234,6 @@ export default async function DashboardPage({
           ))}
         </div>
 
-        {/* Comparativo de semanas — seleção manual */}
-        <WeekComparison
-          current={data}
-          weeks={weeks}
-          currentWeekKey={weekParam}
-        />
-
-        {/* Insights */}
-        <InsightCards data={data} />
-
         {/* Charts */}
         <div className="grid-2col" style={{ marginBottom: '20px' }}>
           <FunnelChart data={data} />
@@ -239,10 +241,17 @@ export default async function DashboardPage({
         </div>
 
         {/* Bottom row */}
-        <div className="grid-2col">
+        <div className="grid-2col" style={{ marginBottom: '20px' }}>
           <EmailStats data={data} />
           <WeeklyTable data={data} />
         </div>
+
+        {/* Comparativo de semanas — seleção manual */}
+        <WeekComparison
+          current={data}
+          weeks={weeks}
+          currentWeekKey={weekParam}
+        />
 
       </div>
     </div>
