@@ -83,9 +83,9 @@ function ChannelRow({ source, value, pct, gradient, isPaid }: {
   const desc  = CHANNEL_DESC[source];
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <div style={{ display: 'flex', alignItems: 'stretch', gap: '10px' }}>
       {/* Bar */}
-      <div style={{ flex: 1, height: '56px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, minHeight: '68px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden', position: 'relative' }}>
         <div style={{
           height: '100%', width: `${Math.max(pct, 2)}%`, borderRadius: '12px',
           background: gradient.bar, boxShadow: `0 4px 14px ${gradient.shadow}`,
@@ -98,33 +98,33 @@ function ChannelRow({ source, value, pct, gradient, isPaid }: {
 
       {/* Label card */}
       <div style={{
-        width: '152px', height: '56px', flexShrink: 0, borderRadius: '14px',
+        width: '178px', flexShrink: 0, borderRadius: '14px',
         background: gradient.bar, boxShadow: `0 6px 18px ${gradient.shadow}`,
-        display: 'flex', alignItems: 'center', gap: '8px', padding: '0 10px', overflow: 'hidden',
+        display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px',
       }}>
-        <div style={{ width: '26px', height: '26px', borderRadius: '7px', flexShrink: 0, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+        <div style={{ width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
           {icon}
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           {/* Name + PAGO badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '1px' }}>
-            <p style={{ fontSize: '8px', fontWeight: 700, margin: 0, color: 'rgba(255,255,255,0.80)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+            <p style={{ fontSize: '10px', fontWeight: 700, margin: 0, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {label}
             </p>
             {isPaid && (
-              <span style={{ fontSize: '6px', fontWeight: 800, color: 'rgba(255,255,255,0.95)', background: 'rgba(255,255,255,0.22)', borderRadius: '3px', padding: '1px 3px', flexShrink: 0 }}>
+              <span style={{ fontSize: '7px', fontWeight: 800, color: 'rgba(255,255,255,0.95)', background: 'rgba(255,255,255,0.22)', borderRadius: '3px', padding: '1px 4px', flexShrink: 0 }}>
                 PAGO
               </span>
             )}
           </div>
           {/* Value + pct */}
-          <p style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: 'white', letterSpacing: '-0.3px', lineHeight: 1 }}>
+          <p style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'white', letterSpacing: '-0.4px', lineHeight: 1 }}>
             {value.toLocaleString('pt-BR')}{' '}
-            <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.70 }}>{pct.toFixed(1)}%</span>
+            <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.72 }}>{pct.toFixed(1)}%</span>
           </p>
-          {/* Description — always visible */}
+          {/* Description — wraps naturally */}
           {desc && (
-            <p style={{ fontSize: '8px', margin: '2px 0 0', color: 'rgba(255,255,255,0.62)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+            <p style={{ fontSize: '9px', margin: '3px 0 0', color: 'rgba(255,255,255,0.68)', lineHeight: 1.4 }}>
               {desc}
             </p>
           )}
