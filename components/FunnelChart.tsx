@@ -130,14 +130,14 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
               <div style={{
                 marginLeft: sideMargin,
                 marginRight: sideMargin,
-                height: '76px',
+                minHeight: '80px',
                 borderRadius: '16px',
                 background: step.gradient,
                 boxShadow: `0 8px 28px ${step.shadow}`,
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 20px',
-                gap: '16px',
+                padding: '14px 20px',
+                gap: '14px',
                 position: 'relative',
                 overflow: 'hidden',
               }}>
@@ -149,7 +149,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
 
                 {/* icon */}
                 <div style={{
-                  width: '40px', height: '40px', borderRadius: '11px', flexShrink: 0,
+                  width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0,
                   background: 'rgba(255,255,255,0.22)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', position: 'relative',
@@ -157,32 +157,30 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   {step.icon}
                 </div>
 
-                {/* label + big number */}
+                {/* label + number + sublabel stacked vertically — no right overflow */}
                 <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
                   <p style={{
                     fontSize: '10px', fontWeight: 700, margin: 0,
                     color: 'rgba(255,255,255,0.75)',
                     textTransform: 'uppercase', letterSpacing: '0.07em',
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                   }}>
                     {step.label}
                   </p>
                   <p style={{
-                    fontSize: '24px', fontWeight: 800, margin: '1px 0 0',
-                    color: 'white', letterSpacing: '-0.6px', lineHeight: 1,
+                    fontSize: '22px', fontWeight: 800, margin: '2px 0 0',
+                    color: 'white', letterSpacing: '-0.5px', lineHeight: 1,
                   }}>
                     {(step.value ?? 0).toLocaleString('pt-BR')}
                   </p>
+                  <p style={{
+                    fontSize: '10px', margin: '3px 0 0',
+                    color: 'rgba(255,255,255,0.62)', lineHeight: 1.3,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  }}>
+                    {step.sublabel}
+                  </p>
                 </div>
-
-                {/* sublabel — right side */}
-                <p style={{
-                  fontSize: '11px', color: 'rgba(255,255,255,0.65)',
-                  textAlign: 'right', flexShrink: 0,
-                  maxWidth: '120px', lineHeight: 1.35,
-                  position: 'relative',
-                }}>
-                  {step.sublabel}
-                </p>
               </div>
 
             </div>

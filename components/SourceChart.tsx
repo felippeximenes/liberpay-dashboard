@@ -74,9 +74,9 @@ function SectionHeader({ label, pct, color }: { label: string; pct: number; colo
   );
 }
 
-function ChannelRow({ source, value, pct, gradient, isPaid }: {
+function ChannelRow({ source, value, pct, gradient }: {
   source: string; value: number; pct: number;
-  gradient: { bar: string; shadow: string }; isPaid: boolean;
+  gradient: { bar: string; shadow: string };
 }) {
   const label = CHANNEL_LABELS[source] ?? source;
   const icon  = CHANNEL_ICONS[source]  ?? <Globe size={14} />;
@@ -85,7 +85,7 @@ function ChannelRow({ source, value, pct, gradient, isPaid }: {
   return (
     <div style={{ display: 'flex', alignItems: 'stretch', gap: '10px' }}>
       {/* Bar */}
-      <div style={{ flex: 1, minHeight: '68px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, minHeight: '72px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden', position: 'relative' }}>
         <div style={{
           height: '100%', width: `${Math.max(pct, 2)}%`, borderRadius: '12px',
           background: gradient.bar, boxShadow: `0 4px 14px ${gradient.shadow}`,
@@ -98,33 +98,30 @@ function ChannelRow({ source, value, pct, gradient, isPaid }: {
 
       {/* Label card */}
       <div style={{
-        width: '178px', flexShrink: 0, borderRadius: '14px',
+        width: '168px', flexShrink: 0, borderRadius: '14px',
         background: gradient.bar, boxShadow: `0 6px 18px ${gradient.shadow}`,
         display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px',
       }}>
-        <div style={{ width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+        <div style={{ width: '28px', height: '28px', borderRadius: '8px', flexShrink: 0, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
           {icon}
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
-          {/* Name + PAGO badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
-            <p style={{ fontSize: '10px', fontWeight: 700, margin: 0, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {label}
-            </p>
-            {isPaid && (
-              <span style={{ fontSize: '7px', fontWeight: 800, color: 'rgba(255,255,255,0.95)', background: 'rgba(255,255,255,0.22)', borderRadius: '3px', padding: '1px 4px', flexShrink: 0 }}>
-                PAGO
-              </span>
-            )}
-          </div>
+          {/* Name — wraps freely, no truncation */}
+          <p style={{
+            fontSize: '10px', fontWeight: 700, margin: '0 0 2px',
+            color: 'rgba(255,255,255,0.88)', textTransform: 'uppercase',
+            letterSpacing: '0.05em', lineHeight: 1.3,
+          }}>
+            {label}
+          </p>
           {/* Value + pct */}
-          <p style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'white', letterSpacing: '-0.4px', lineHeight: 1 }}>
+          <p style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: 'white', letterSpacing: '-0.3px', lineHeight: 1 }}>
             {value.toLocaleString('pt-BR')}{' '}
-            <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.72 }}>{pct.toFixed(1)}%</span>
+            <span style={{ fontSize: '10px', fontWeight: 600, opacity: 0.72 }}>{pct.toFixed(1)}%</span>
           </p>
           {/* Description — wraps naturally */}
           {desc && (
-            <p style={{ fontSize: '9px', margin: '3px 0 0', color: 'rgba(255,255,255,0.68)', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '9px', margin: '3px 0 0', color: 'rgba(255,255,255,0.65)', lineHeight: 1.4 }}>
               {desc}
             </p>
           )}
@@ -200,7 +197,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
               <SectionHeader label="Mídia Paga" pct={pct(paidTotal)} color="#3B7DD8" />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {paidEntries.map(([source, value], i) => (
-                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={PAID_GRADIENTS[i % PAID_GRADIENTS.length]} isPaid={true} />
+                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={PAID_GRADIENTS[i % PAID_GRADIENTS.length]} />
                 ))}
               </div>
             </>
@@ -212,7 +209,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
               <SectionHeader label="Orgânico" pct={pct(organicTotal)} color="#00966A" />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {organicEntries.map(([source, value], i) => (
-                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={ORGANIC_GRADIENTS[i % ORGANIC_GRADIENTS.length]} isPaid={false} />
+                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={ORGANIC_GRADIENTS[i % ORGANIC_GRADIENTS.length]} />
                 ))}
               </div>
             </>
@@ -224,7 +221,7 @@ export default function SourceChart({ data }: { data: WeeklySnapshot }) {
               <SectionHeader label="Direto & Outros" pct={pct(otherTotal)} color="#6E7A90" />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {otherEntries.map(([source, value], i) => (
-                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={OTHER_GRADIENTS[i % OTHER_GRADIENTS.length]} isPaid={false} />
+                  <ChannelRow key={source} source={source} value={value} pct={pct(value)} gradient={OTHER_GRADIENTS[i % OTHER_GRADIENTS.length]} />
                 ))}
               </div>
             </>
