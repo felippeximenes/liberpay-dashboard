@@ -7,6 +7,7 @@ import Sidebar, { WeekEntry } from '@/components/Sidebar';
 import WeekNav from '@/components/WeekNav';
 import WeekComparison from '@/components/WeekComparison';
 import ExecutiveSummary from '@/components/ExecutiveSummary';
+import ExportButton from '@/components/ExportButton';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -180,16 +181,19 @@ export default async function DashboardPage({
             </div>
             <WeekNav weeks={weeks} currentWeek={weekParam} weekLabel={weekLabel} />
           </div>
-          <div className="glass" style={{ padding: '12px 20px', textAlign: 'right', flexShrink: 0 }}>
-            <p style={{ fontSize: '11px', color: '#475569', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
-              Última atualização
-            </p>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#CBD5E1', margin: '4px 0 0' }}>
-              {new Date(data.generatedAt).toLocaleString('pt-BR', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
-              })}
-            </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <ExportButton data={data} />
+            <div className="glass" style={{ padding: '12px 20px', textAlign: 'right' }}>
+              <p style={{ fontSize: '11px', color: '#475569', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
+                Última atualização
+              </p>
+              <p style={{ fontSize: '13px', fontWeight: 600, color: '#CBD5E1', margin: '4px 0 0' }}>
+                {new Date(data.generatedAt).toLocaleString('pt-BR', {
+                  day: '2-digit', month: '2-digit', year: 'numeric',
+                  hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+                })}
+              </p>
+            </div>
           </div>
         </div>
 
