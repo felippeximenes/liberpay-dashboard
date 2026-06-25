@@ -114,9 +114,14 @@ export default async function DashboardPage({
 
   const weekParam = searchParams.week;
   let snapshotUrl = process.env.NEXT_PUBLIC_SNAPSHOT_URL;
+
   if (weekParam) {
+    // Semana específica selecionada pelo usuário
     const found = weeks.find((w) => w.key === weekParam);
     if (found) snapshotUrl = found.url;
+  } else if (!snapshotUrl && weeks.length > 0) {
+    // Sem URL configurada → carrega automaticamente o blob mais recente
+    snapshotUrl = weeks[0].url;
   }
 
   const data = await getSnapshotData(snapshotUrl);

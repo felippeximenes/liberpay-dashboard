@@ -1,67 +1,27 @@
 {
-  "week": "2026-06-01/2026-06-07",
-  "generatedAt": "2026-06-06T08:00:00Z",
+  "week": "aguardando/dados",
+  "generatedAt": "2026-06-25T00:00:00Z",
   "ga4": {
-    "visitors": 1240,
-    "newUsers": 980,
-    "leads": 421,
-    "bySource": {
-      "Paid Social": 680,
-      "Direct": 310,
-      "Organic Search": 180,
-      "Referral": 70
-    },
-    "topPages": [
-      { "page": "P2P - LiberPay", "views": 2400 },
-      { "page": "Configuração P2P", "views": 2300 },
-      { "page": "lp - Liberpay", "views": 1500 },
-      { "page": "Gateway Moedas", "views": 1400 }
-    ]
+    "visitors": 0,
+    "newUsers": 0,
+    "leads": 0,
+    "bySource": {},
+    "topPages": []
   },
   "pipedrive": {
-    "dealsCreated": 38,
-    "dealsWon": 6,
-    "totalValue": 18400
+    "dealsCreated": 0,
+    "dealsWon": 0,
+    "totalValue": 0
   },
   "mailpoet": {
-    "newSubscribers": 24,
-    "totalSubscribers": 4499,
-    "openRate": 12.5,
-    "automationsActive": 2
+    "newSubscribers": 0,
+    "totalSubscribers": 0,
+    "openRate": 0,
+    "automationsActive": 0
   },
   "conversion": {
     "transactions": null,
     "revenue": null
   },
-  "previousWeek": {
-    "week": "2026-05-25/2026-05-31",
-    "generatedAt": "2026-05-30T08:00:00Z",
-    "ga4": {
-      "visitors": 1105,
-      "newUsers": 870,
-      "leads": 389,
-      "bySource": {
-        "Paid Social": 590,
-        "Direct": 285,
-        "Organic Search": 160,
-        "Referral": 70
-      },
-      "topPages": []
-    },
-    "pipedrive": {
-      "dealsCreated": 31,
-      "dealsWon": 4,
-      "totalValue": 11200
-    },
-    "mailpoet": {
-      "newSubscribers": 18,
-      "totalSubscribers": 4475,
-      "openRate": 11.8,
-      "automationsActive": 2
-    },
-    "conversion": {
-      "transactions": null,
-      "revenue": null
-    }
-  }
+  "previousWeek": null
 }
