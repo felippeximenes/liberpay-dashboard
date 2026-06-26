@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { WeeklySnapshot } from '@/types/snapshot';
 import FunnelChart from '@/components/FunnelChart';
 import SourceChart from '@/components/SourceChart';
