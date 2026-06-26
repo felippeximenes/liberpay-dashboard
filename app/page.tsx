@@ -32,7 +32,7 @@ async function getWeeks(): Promise<WeekEntry[]> {
 
 async function getSnapshotData(url?: string): Promise<WeeklySnapshot> {
   if (url) {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('Falha ao buscar snapshot');
     return res.json();
   }
@@ -196,7 +196,7 @@ export default async function DashboardPage({
               <p style={{ fontSize: '13px', fontWeight: 600, color: '#CBD5E1', margin: '4px 0 0' }}>
                 {new Date(data.generatedAt).toLocaleString('pt-BR', {
                   day: '2-digit', month: '2-digit', year: 'numeric',
-                  hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+                  hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo',
                 })}
               </p>
             </div>
