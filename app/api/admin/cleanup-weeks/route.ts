@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { list, del } from '@vercel/blob';
 
-export async function DELETE(req: NextRequest) {
-  if (req.headers.get('x-snapshot-secret') !== process.env.SNAPSHOT_SECRET) {
+export async function GET(req: NextRequest) {
+  const secret = req.nextUrl.searchParams.get('secret');
+  if (secret !== process.env.SNAPSHOT_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
