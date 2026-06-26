@@ -60,21 +60,7 @@ function buildBullets(data: WeeklySnapshot): Bullet[] {
     bullets.push({ status: 'warning', text: `${leadsVal} leads na caixa de entrada do Pipedrive esta semana.` });
   }
 
-  /* ── 3. Conversão lead → deal (ambos Pipedrive) ── */
-  const leads = leadsVal;
-  const deals = data.pipedrive.dealsCreated;
-  if (leads > 0) {
-    const conv = (deals / leads) * 100;
-    if (conv >= 30) {
-      bullets.push({ status: 'good', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — acima da meta de 30%.` });
-    } else if (conv >= 15) {
-      bullets.push({ status: 'warning', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — abaixo da meta de 30%. Revisar qualificação.` });
-    } else {
-      bullets.push({ status: 'bad', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — muito abaixo da meta de 30%.` });
-    }
-  }
-
-  /* ── 4. Mídia paga ── */
+  /* ── 3. Mídia paga ── */
   const bySource = data.ga4.bySource ?? {};
   const total = data.ga4.visitors;
   const paid = (bySource['Cross-network'] ?? 0) + (bySource['Paid Social'] ?? 0) + (bySource['Paid Search'] ?? 0) + (bySource['Paid Other'] ?? 0);
