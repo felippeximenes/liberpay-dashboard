@@ -17,7 +17,6 @@ import { list } from '@vercel/blob';
 import { Eye, Zap, Users, TrendingUp, TrendingDown } from 'lucide-react';
 
 async function getWeeks(): Promise<WeekEntry[]> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
   try {
     const { blobs } = await list({ prefix: 'snapshots/weeks/' });
     return blobs
