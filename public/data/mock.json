@@ -9,6 +9,7 @@
     "topPages": []
   },
   "pipedrive": {
+    "leadsCreated": 0,
     "dealsCreated": 0,
     "dealsWon": 0,
     "totalValue": 0

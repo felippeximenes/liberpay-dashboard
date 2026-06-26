@@ -52,7 +52,7 @@ export default function WeeklyTable({ data }: { data: WeeklySnapshot }) {
 
   const rows: Row[] = [
     { label: 'Sessões', current: data.ga4.visitors, previous: prev?.ga4.visitors ?? null },
-    { label: 'Leads', current: data.ga4.leads, previous: prev?.ga4.leads ?? null },
+    { label: 'Leads', current: data.pipedrive.leadsCreated, previous: prev?.pipedrive.leadsCreated ?? null },
     { label: 'Deals criados', current: data.pipedrive.dealsCreated, previous: prev?.pipedrive.dealsCreated ?? null },
     { label: 'Deals ganhos', current: data.pipedrive.dealsWon, previous: prev?.pipedrive.dealsWon ?? null },
     { label: 'Valor total', current: data.pipedrive.totalValue, previous: prev?.pipedrive.totalValue ?? null, isCurrency: true },

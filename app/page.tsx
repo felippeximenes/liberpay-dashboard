@@ -141,13 +141,13 @@ export default async function DashboardPage({
     },
     {
       label: 'Leads gerados',
-      value: data.ga4.leads,
-      prevValue: prev?.ga4.leads ?? null,
-      sub: 'eventos GA4',
+      value: data.pipedrive.leadsCreated,
+      prevValue: prev?.pipedrive.leadsCreated ?? null,
+      sub: 'caixa de entrada · Pipedrive',
       gradient: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)',
       shadow: 'rgba(123,111,208,0.35)',
       icon: <TrendingUp size={18} />,
-      health: healthFromDelta(data.ga4.leads, prev?.ga4.leads, true),
+      health: healthFromDelta(data.pipedrive.leadsCreated, prev?.pipedrive.leadsCreated, true),
     },
     {
       label: 'Deals criados',

@@ -28,7 +28,7 @@ function downloadCSV(data: WeeklySnapshot) {
     ['Métrica', 'Valor', 'Semana'],
     ['Visitantes', data.ga4.visitors, data.week],
     ['Novos Usuários', data.ga4.newUsers, data.week],
-    ['Leads (Eventos)', data.ga4.leads, data.week],
+    ['Leads (Pipedrive)', data.pipedrive.leadsCreated, data.week],
     ['Deals Criados', data.pipedrive.dealsCreated, data.week],
     ['Deals Ganhos', data.pipedrive.dealsWon, data.week],
     ['Valor Total (R$)', data.pipedrive.totalValue, data.week],

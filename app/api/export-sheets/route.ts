@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     ['Métrica', 'Esta semana', 'Semana anterior', 'Variação'],
     ['Sessões',            data.ga4.visitors,              prev?.ga4.visitors ?? '—',              fmtPct(data.ga4.visitors, prev?.ga4.visitors)],
     ['Novos usuários',     data.ga4.newUsers,              prev?.ga4.newUsers ?? '—',              fmtPct(data.ga4.newUsers, prev?.ga4.newUsers)],
-    ['Leads (GA4)',        data.ga4.leads,                 prev?.ga4.leads ?? '—',                 fmtPct(data.ga4.leads, prev?.ga4.leads)],
+    ['Leads (Pipedrive)',  data.pipedrive.leadsCreated,    prev?.pipedrive.leadsCreated ?? '—',    fmtPct(data.pipedrive.leadsCreated, prev?.pipedrive.leadsCreated)],
     ['Deals criados',      data.pipedrive.dealsCreated,    prev?.pipedrive.dealsCreated ?? '—',    fmtPct(data.pipedrive.dealsCreated, prev?.pipedrive.dealsCreated)],
     ['Deals ganhos',       data.pipedrive.dealsWon,        prev?.pipedrive.dealsWon ?? '—',        fmtPct(data.pipedrive.dealsWon, prev?.pipedrive.dealsWon)],
     ['Valor total (R$)',   data.pipedrive.totalValue,      prev?.pipedrive.totalValue ?? '—',      fmtPct(data.pipedrive.totalValue, prev?.pipedrive.totalValue)],
@@ -103,10 +103,10 @@ export async function POST(req: NextRequest) {
   const funnelRows = [
     ['Funil de Vendas', '', '', '', ''],
     ['Etapa', 'Valor', 'Taxa de conversão', 'Meta', 'Fonte'],
-    ['Sessões',      data.ga4.visitors,           '—',                                                    '—',   'GA4'],
-    ['Leads',        data.ga4.leads,              conv(data.ga4.visitors, data.ga4.leads),                '3%',  'GA4'],
-    ['Deals criados',data.pipedrive.dealsCreated, conv(data.ga4.leads, data.pipedrive.dealsCreated),      '30%', 'Pipedrive'],
-    ['Deals ganhos', data.pipedrive.dealsWon,     conv(data.pipedrive.dealsCreated, data.pipedrive.dealsWon), '20%', 'Pipedrive'],
+    ['Sessões',      data.ga4.visitors,                '—',                                                              '—',   'GA4'],
+    ['Leads',        data.pipedrive.leadsCreated,     '—',                                                              '—',   'Pipedrive'],
+    ['Deals criados',data.pipedrive.dealsCreated,     conv(data.pipedrive.leadsCreated, data.pipedrive.dealsCreated),   '30%', 'Pipedrive'],
+    ['Deals ganhos', data.pipedrive.dealsWon,         conv(data.pipedrive.dealsCreated, data.pipedrive.dealsWon),       '20%', 'Pipedrive'],
   ];
 
   const sourceEntries = Object.entries(data.ga4.bySource ?? {}).sort(([, a], [, b]) => b - a);

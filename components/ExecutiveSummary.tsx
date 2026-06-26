@@ -43,36 +43,35 @@ function buildBullets(data: WeeklySnapshot): Bullet[] {
     bullets.push({ status: 'warning', text: `${data.ga4.visitors.toLocaleString('pt-BR')} sessões registradas. Sem semana anterior para comparar ainda.` });
   }
 
-  /* ── 2. Leads ── */
-  const leadsDelta = prev ? pct(data.ga4.leads, prev.ga4.leads) : null;
-  if (data.ga4.leads === 0) {
-    bullets.push({ status: 'bad', text: 'Nenhum lead registrado no GA4 esta semana. Verifique os formulários e eventos de rastreamento.' });
+  /* ── 2. Leads (Pipedrive) ── */
+  const leadsVal = data.pipedrive.leadsCreated;
+  const leadsDelta = prev ? pct(leadsVal, prev.pipedrive.leadsCreated) : null;
+  if (leadsVal === 0) {
+    bullets.push({ status: 'bad', text: 'Nenhum lead registrado no Pipedrive esta semana. Verificar se a caixa de entrada está sendo alimentada.' });
   } else if (leadsDelta !== null) {
     if (leadsDelta >= 10) {
-      bullets.push({ status: 'good', text: `Leads cresceram ${fmtPct(leadsDelta)} — ${data.ga4.leads} leads captados pelo GA4.` });
+      bullets.push({ status: 'good', text: `Leads cresceram ${fmtPct(leadsDelta)} — ${leadsVal} leads na caixa de entrada do Pipedrive.` });
     } else if (leadsDelta <= -15) {
-      bullets.push({ status: 'bad', text: `Queda de leads — ${fmtPct(leadsDelta)} vs semana anterior (${data.ga4.leads} leads). Analisar origem do tráfego.` });
+      bullets.push({ status: 'bad', text: `Queda de leads — ${fmtPct(leadsDelta)} vs semana anterior (${leadsVal} leads). Analisar origem do tráfego.` });
     } else {
-      bullets.push({ status: 'warning', text: `${data.ga4.leads} leads captados (${fmtPct(leadsDelta)} vs anterior). Acompanhar tendência nas próximas semanas.` });
+      bullets.push({ status: 'warning', text: `${leadsVal} leads no Pipedrive (${fmtPct(leadsDelta)} vs anterior). Acompanhar tendência nas próximas semanas.` });
     }
   } else {
-    bullets.push({ status: 'warning', text: `${data.ga4.leads} leads captados pelo GA4 esta semana.` });
+    bullets.push({ status: 'warning', text: `${leadsVal} leads na caixa de entrada do Pipedrive esta semana.` });
   }
 
-  /* ── 3. Conversão lead → deal ── */
-  const leads = data.ga4.leads;
+  /* ── 3. Conversão lead → deal (ambos Pipedrive) ── */
+  const leads = leadsVal;
   const deals = data.pipedrive.dealsCreated;
-  if (leads > 0 && deals <= leads) {
+  if (leads > 0) {
     const conv = (deals / leads) * 100;
-    if (conv >= 5) {
-      bullets.push({ status: 'good', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — dentro da meta (≥ 5%).` });
-    } else if (conv >= 2) {
-      bullets.push({ status: 'warning', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — abaixo da meta de 5%. Revisar abordagem de vendas.` });
+    if (conv >= 30) {
+      bullets.push({ status: 'good', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — acima da meta de 30%.` });
+    } else if (conv >= 15) {
+      bullets.push({ status: 'warning', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — abaixo da meta de 30%. Revisar qualificação.` });
     } else {
-      bullets.push({ status: 'bad', text: `Conversão crítica: ${conv.toFixed(1)}% dos leads viraram deals. Meta é 5% — investigar com urgência.` });
+      bullets.push({ status: 'bad', text: `Conversão de ${conv.toFixed(1)}% de leads para deals — muito abaixo da meta de 30%.` });
     }
-  } else if (deals > leads && leads > 0) {
-    bullets.push({ status: 'warning', text: `Pipedrive tem ${deals} deals e GA4 registrou ${leads} leads — sistemas contam de formas diferentes, comparação direta não é válida.` });
   }
 
   /* ── 4. Mídia paga ── */

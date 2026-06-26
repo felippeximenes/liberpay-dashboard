@@ -55,7 +55,7 @@ function Delta({ curr, prev }: { curr: number | null; prev: number | null }) {
 const ROWS: { label: string; get: (d: WeeklySnapshot) => number | null; source: string; isCurrency?: boolean; isRate?: boolean }[] = [
   { label: 'Sessões',        get: d => d.ga4.visitors,              source: 'GA4' },
   { label: 'Novos usuários', get: d => d.ga4.newUsers,              source: 'GA4' },
-  { label: 'Leads',          get: d => d.ga4.leads,                 source: 'GA4' },
+  { label: 'Leads',          get: d => d.pipedrive.leadsCreated,    source: 'Pipedrive' },
   { label: 'Deals criados',  get: d => d.pipedrive.dealsCreated,    source: 'Pipedrive' },
   { label: 'Deals ganhos',   get: d => d.pipedrive.dealsWon,        source: 'Pipedrive' },
   { label: 'Valor total',    get: d => d.pipedrive.totalValue,      source: 'Pipedrive', isCurrency: true },

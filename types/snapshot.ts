@@ -11,6 +11,7 @@ export interface WeeklySnapshot {
     topPages: Array<{ page: string; views: number }>;
   };
   pipedrive: {
+    leadsCreated: number;
     dealsCreated: number;
     dealsWon: number;
     totalValue: number;

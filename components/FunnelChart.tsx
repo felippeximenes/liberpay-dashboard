@@ -14,6 +14,7 @@ interface FunnelStep {
   gradient: string;
   shadow: string;
   icon: React.ReactNode;
+  source: 'ga4' | 'pipedrive';
 }
 
 function convRate(from: number, to: number | null): number | null {
@@ -21,10 +22,9 @@ function convRate(from: number, to: number | null): number | null {
   return (to / from) * 100;
 }
 
+// Meta apenas para conversões dentro do Pipedrive
 const CONV_TARGETS: Record<number, { pct: number }> = {
-  1: { pct: 3  },
-  2: { pct: 30 },
-  3: { pct: 20 },
+  3: { pct: 20 }, // Deals criados → ganhos: meta 20%
 };
 
 export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
@@ -36,14 +36,16 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       gradient: 'linear-gradient(135deg, #3B7DD8 0%, #6EA8F0 100%)',
       shadow: 'rgba(59,125,216,0.40)',
       icon: <Users size={17} />,
+      source: 'ga4',
     },
     {
-      label: 'Leads Gerados',
-      sublabel: 'evento lead_created · GA4',
-      value: data.ga4.leads,
+      label: 'Leads Criados',
+      sublabel: 'caixa de entrada · Pipedrive',
+      value: data.pipedrive.leadsCreated,
       gradient: 'linear-gradient(135deg, #7B6FD0 0%, #A99FE8 100%)',
       shadow: 'rgba(123,111,208,0.40)',
       icon: <TrendingUp size={17} />,
+      source: 'pipedrive',
     },
     {
       label: 'Deals Criados',
@@ -52,6 +54,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       gradient: 'linear-gradient(135deg, #00C0A0 0%, #00DDB8 100%)',
       shadow: 'rgba(0,192,160,0.40)',
       icon: <Zap size={17} />,
+      source: 'pipedrive',
     },
     {
       label: 'Deals Ganhos',
@@ -62,6 +65,7 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
       gradient: 'linear-gradient(135deg, #0EA968 0%, #34D399 100%)',
       shadow: 'rgba(14,169,104,0.40)',
       icon: <Award size={17} />,
+      source: 'pipedrive',
     },
   ];
 
@@ -81,9 +85,9 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
         {steps.map((step, i) => {
           const prev = i > 0 ? steps[i - 1] : null;
           const prevVal = prev?.value ?? 0;
-          const currVal = step.value ?? 0;
-          const isInverted = prev !== null && prevVal > 0 && currVal > prevVal;
-          const rateNum = prev && !isInverted ? convRate(prevVal, step.value) : null;
+          // Fontes distintas quando etapas vêm de sistemas diferentes (ex: GA4 → Pipedrive)
+          const crossSystem = prev !== null && prev.source !== step.source;
+          const rateNum = prev && !crossSystem ? convRate(prevVal, step.value) : null;
           const target = CONV_TARGETS[i];
           const rateColor = rateNum === null || !target
             ? '#94A3B8'
@@ -106,17 +110,17 @@ export default function FunnelChart({ data }: { data: WeeklySnapshot }) {
                   <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
                   <span style={{
                     fontSize: '11px', fontWeight: 700,
-                    color: isInverted ? '#F0883E' : rateColor,
-                    background: isInverted ? 'rgba(240,136,62,0.10)' : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${isInverted ? 'rgba(240,136,62,0.35)' : rateColor + '44'}`,
+                    color: crossSystem ? '#F0883E' : rateColor,
+                    background: crossSystem ? 'rgba(240,136,62,0.10)' : 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${crossSystem ? 'rgba(240,136,62,0.35)' : rateColor + '44'}`,
                     padding: '3px 12px', borderRadius: '20px', whiteSpace: 'nowrap',
                     margin: '0 10px',
                   }}
-                    title={isInverted
+                    title={crossSystem
                       ? 'GA4 e Pipedrive usam definições distintas de lead/deal'
                       : target ? `Meta: ${target.pct}%` : undefined}
                   >
-                    {isInverted
+                    {crossSystem
                       ? '⚠ fontes distintas'
                       : rateNum !== null
                         ? `↓ ${rateNum.toFixed(1)}%${target ? `  ·  meta ${target.pct}%` : ''}`
