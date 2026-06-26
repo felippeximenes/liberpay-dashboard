@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
     delete data.previousWeek;
     const content = JSON.stringify(data);
 
-    await put(latest.pathname, content, { access: 'public', addRandomSuffix: false });
-    await put('snapshots/latest.json', content, { access: 'public', addRandomSuffix: false });
+    await put(latest.pathname, content, { access: 'public', addRandomSuffix: false, allowOverwrite: true });
+    await put('snapshots/latest.json', content, { access: 'public', addRandomSuffix: false, allowOverwrite: true });
 
     return NextResponse.json({ success: true, cleared: latest.pathname });
   } catch (err) {
