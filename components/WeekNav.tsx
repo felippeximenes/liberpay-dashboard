@@ -2,10 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { WeekEntry } from './Sidebar';
+import { DayEntry } from './Sidebar';
 
 interface WeekNavProps {
-  weeks: WeekEntry[];
+  weeks: DayEntry[];
   currentWeek?: string;
   weekLabel: string;
 }
@@ -13,21 +13,20 @@ interface WeekNavProps {
 export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps) {
   const router = useRouter();
 
-  const idx = currentWeek ? weeks.findIndex(w => w.key === currentWeek) : -1;
-
+  const idx = currentWeek ? weeks.findIndex(w => w.date === currentWeek) : -1;
   const canPrev = idx === -1 ? weeks.length > 0 : idx < weeks.length - 1;
   const canNext = idx >= 0;
 
   const goPrev = () => {
     if (!canPrev) return;
-    if (idx === -1) router.push(`?week=${weeks[0].key}`);
-    else router.push(`?week=${weeks[idx + 1].key}`);
+    if (idx === -1) router.push(`?week=${weeks[0].date}`);
+    else router.push(`?week=${weeks[idx + 1].date}`);
   };
 
   const goNext = () => {
     if (!canNext) return;
     if (idx === 0) router.push('/');
-    else router.push(`?week=${weeks[idx - 1].key}`);
+    else router.push(`?week=${weeks[idx - 1].date}`);
   };
 
   const btn = (active: boolean): React.CSSProperties => ({
@@ -36,8 +35,7 @@ export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps)
     background: active ? 'rgba(59,125,216,0.18)' : 'rgba(255,255,255,0.06)',
     color: active ? '#60A5FA' : '#334155',
     cursor: active ? 'pointer' : 'default',
-    flexShrink: 0, padding: 0,
-    transition: 'all 0.15s',
+    flexShrink: 0, padding: 0, transition: 'all 0.15s',
   });
 
   return (
@@ -46,13 +44,11 @@ export default function WeekNav({ weeks, currentWeek, weekLabel }: WeekNavProps)
         Dashboard de Funil
       </h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <button style={btn(canPrev)} onClick={goPrev} disabled={!canPrev} title="Semana anterior">
+        <button style={btn(canPrev)} onClick={goPrev} disabled={!canPrev}>
           <ChevronLeft size={13} />
         </button>
-        <p style={{ fontSize: '13px', color: '#64748B', margin: 0 }}>
-          {weekLabel}
-        </p>
-        <button style={btn(canNext)} onClick={goNext} disabled={!canNext} title="Semana seguinte">
+        <p style={{ fontSize: '13px', color: '#64748B', margin: 0 }}>{weekLabel}</p>
+        <button style={btn(canNext)} onClick={goNext} disabled={!canNext}>
           <ChevronRight size={13} />
         </button>
       </div>
