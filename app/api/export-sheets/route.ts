@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     credentials,
     scopes: [
       'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive',
     ],
   });
 
@@ -205,13 +205,7 @@ export async function POST(req: NextRequest) {
 
   /* ── Share ─────────────────────────────────────────────── */
 
-  // Anyone with the link can view
-  await drive.permissions.create({
-    fileId: sid,
-    requestBody: { role: 'reader', type: 'anyone' },
-  });
-
-  // Share as editor with configured email (e.g. your Google account)
+  // Share as editor with configured email
   const shareEmail = process.env.GOOGLE_SHARE_EMAIL;
   if (shareEmail) {
     await drive.permissions.create({
