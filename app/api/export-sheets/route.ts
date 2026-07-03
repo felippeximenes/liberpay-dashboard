@@ -65,6 +65,10 @@ export async function POST(req: NextRequest) {
   let credentials;
   try {
     credentials = JSON.parse(credJson);
+    // Fix double-escaped newlines in private key (common in Vercel env vars)
+    if (credentials.private_key) {
+      credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+    }
   } catch (e) {
     return NextResponse.json({ error: 'JSON inválido em GOOGLE_SERVICE_ACCOUNT_JSON', detail: String(e) }, { status: 500 });
   }
