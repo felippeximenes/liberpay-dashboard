@@ -18,11 +18,6 @@ interface SidebarProps {
   data: WeeklySnapshot;
 }
 
-function fmtDay(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00Z');
-  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
-}
-
 function fmtDayShort(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00Z');
   return d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', timeZone: 'UTC' });
