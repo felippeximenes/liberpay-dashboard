@@ -201,16 +201,24 @@ export default async function DashboardPage({
   searchParams: { days?: string; offset?: string };
 }) {
   const days = Math.max(1, Math.min(90, parseInt(searchParams.days ?? '1', 10) || 1));
-  const offset = Math.max(0, parseInt(searchParams.offset ?? '0', 10) || 0);
-
   const today = todayBRT();
+  const availableDays = await getAvailableDays();
+
+  let offset: number;
+  if (searchParams.offset !== undefined) {
+    offset = Math.max(0, parseInt(searchParams.offset, 10) || 0);
+  } else if (availableDays.length > 0 && availableDays[0].date < today) {
+    const diffMs = new Date(today + 'T00:00:00Z').getTime() - new Date(availableDays[0].date + 'T00:00:00Z').getTime();
+    offset = Math.round(diffMs / 86400000);
+  } else {
+    offset = 0;
+  }
+
   const toDate = shiftDate(today, -offset);
   const fromDate = shiftDate(toDate, -(days - 1));
 
   const prevToDate = shiftDate(fromDate, -1);
   const prevFromDate = shiftDate(prevToDate, -(days - 1));
-
-  const availableDays = await getAvailableDays();
 
   const currentEntries = availableDays.filter(d => d.date >= fromDate && d.date <= toDate);
   const prevEntries = availableDays.filter(d => d.date >= prevFromDate && d.date <= prevToDate);
