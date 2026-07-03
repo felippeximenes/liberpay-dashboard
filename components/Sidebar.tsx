@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { LayoutDashboard, Calendar, Download, FileText, ChevronRight } from 'lucide-react';
-import { WeeklySnapshot } from '@/types/snapshot';
+import { LayoutDashboard, Calendar, ChevronRight } from 'lucide-react';
 
 export interface DayEntry {
   date: string;
@@ -15,7 +14,6 @@ export type WeekEntry = DayEntry;
 
 interface SidebarProps {
   days: DayEntry[];
-  data: WeeklySnapshot;
 }
 
 function fmtDayShort(dateStr: string): string {
@@ -28,31 +26,7 @@ function getMonthLabel(dateStr: string): string {
   return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
 
-function downloadCSV(data: WeeklySnapshot) {
-  const rows = [
-    ['Métrica', 'Valor', 'Período'],
-    ['Visitantes', data.ga4.visitors, data.week],
-    ['Novos Usuários', data.ga4.newUsers, data.week],
-    ['Leads (Pipedrive)', data.pipedrive.leadsCreated, data.week],
-    ['Deals Criados', data.pipedrive.dealsCreated, data.week],
-    ['Deals Ganhos', data.pipedrive.dealsWon, data.week],
-    ['Valor Total (R$)', data.pipedrive.totalValue, data.week],
-    ['Total Assinantes', data.mailpoet.totalSubscribers, data.week],
-    ['Novos Assinantes', data.mailpoet.newSubscribers, data.week],
-    ['Taxa de Abertura (%)', data.mailpoet.openRate, data.week],
-    ['Transações', data.conversion.transactions ?? '—', data.week],
-  ];
-  const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n');
-  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `liberpay-funil-${data.week.replace(/[/–\s]/g, '_')}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-type Panel = 'days' | 'export' | null;
+type Panel = 'days' | null;
 
 function NavIcon({ icon, active, onClick }: { icon: React.ReactNode; active: boolean; onClick: () => void }) {
   return (
@@ -72,7 +46,7 @@ function NavIcon({ icon, active, onClick }: { icon: React.ReactNode; active: boo
   );
 }
 
-export default function Sidebar({ days, data }: SidebarProps) {
+export default function Sidebar({ days }: SidebarProps) {
   const [panel, setPanel] = useState<Panel>(null);
   const router = useRouter();
 
@@ -169,48 +143,6 @@ export default function Sidebar({ days, data }: SidebarProps) {
     </div>
   );
 
-  const exportPanel = (
-    <div className="sidebar-panel" style={{ width: '240px' }}>
-      <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <p style={{ fontSize: '14px', fontWeight: 700, color: '#E2E8F0', margin: 0 }}>Exportar</p>
-        <p style={{ fontSize: '11px', color: '#64748B', margin: '4px 0 0' }}>
-          Período: {data.week}
-        </p>
-      </div>
-      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <button
-          onClick={() => { setPanel(null); setTimeout(() => window.print(), 150); }}
-          style={{
-            width: '100%', padding: '14px 16px', border: 'none', borderRadius: '12px',
-            background: 'linear-gradient(135deg, #3B7DD8, #6EA8F0)',
-            color: 'white', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '10px',
-            boxShadow: '0 4px 14px rgba(59,125,216,0.35)',
-          }}
-        >
-          <FileText size={16} />
-          Exportar PDF
-        </button>
-        <button
-          onClick={() => { downloadCSV(data); setPanel(null); }}
-          style={{
-            width: '100%', padding: '14px 16px', borderRadius: '12px',
-            background: 'rgba(59,125,216,0.10)', border: '1px solid rgba(59,125,216,0.25)',
-            color: '#60A5FA', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '10px',
-          }}
-        >
-          <Download size={16} />
-          Exportar CSV
-        </button>
-        <p style={{ fontSize: '11px', color: '#475569', margin: '6px 0 0', lineHeight: 1.6 }}>
-          <strong style={{ color: '#64748B' }}>PDF</strong> — captura o visual do dashboard.<br />
-          <strong style={{ color: '#64748B' }}>CSV</strong> — dados em formato planilha.
-        </p>
-      </div>
-    </div>
-  );
-
   return (
     <>
       <aside id="sidebar" style={{
@@ -227,17 +159,14 @@ export default function Sidebar({ days, data }: SidebarProps) {
         </div>
         <NavIcon icon={<LayoutDashboard size={20} />} active={panel === null} onClick={() => setPanel(null)} />
         <NavIcon icon={<Calendar size={20} />} active={panel === 'days'} onClick={() => toggle('days')} />
-        <NavIcon icon={<Download size={20} />} active={panel === 'export'} onClick={() => toggle('export')} />
       </aside>
 
       <nav className="mobile-nav">
         <NavIcon icon={<LayoutDashboard size={22} />} active={panel === null} onClick={() => setPanel(null)} />
         <NavIcon icon={<Calendar size={22} />} active={panel === 'days'} onClick={() => toggle('days')} />
-        <NavIcon icon={<Download size={22} />} active={panel === 'export'} onClick={() => toggle('export')} />
       </nav>
 
       {panel === 'days' && daysPanel}
-      {panel === 'export' && exportPanel}
 
       {panel !== null && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 38 }} onClick={() => setPanel(null)} />

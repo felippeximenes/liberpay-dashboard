@@ -284,7 +284,7 @@ export default async function DashboardPage({
   return (
     <div style={{ background: '#0B0F1E', minHeight: '100vh' }}>
 
-      <Sidebar days={availableDays} data={data} />
+      <Sidebar days={availableDays} />
 
       <div id="dashboard-print" className="layout-main">
 
