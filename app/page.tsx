@@ -309,6 +309,7 @@ export default async function DashboardPage({
               toDate={toDate}
               hasPrev={hasPrev}
               hasNext={hasNext}
+              maxDate={availableDays[0]?.date}
             />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>

@@ -11,6 +11,7 @@ interface PeriodSelectorProps {
   toDate: string;
   hasPrev: boolean;
   hasNext: boolean;
+  maxDate?: string;
 }
 
 const PRESETS = [
@@ -35,7 +36,7 @@ function todayBRT(): string {
   return new Date(new Date().getTime() - 3 * 60 * 60 * 1000).toISOString().split('T')[0];
 }
 
-export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev, hasNext }: PeriodSelectorProps) {
+export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev, hasNext, maxDate }: PeriodSelectorProps) {
   const router = useRouter();
   const isSingleDay = days === 1;
   const calendarRef = useRef<HTMLInputElement>(null);
@@ -117,7 +118,7 @@ export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev
             ref={calendarRef}
             type="date"
             value={toDate}
-            max={todayBRT()}
+            max={maxDate ?? todayBRT()}
             onChange={handleCalendar}
             style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
           />
