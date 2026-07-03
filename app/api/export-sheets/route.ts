@@ -62,10 +62,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'GOOGLE_SERVICE_ACCOUNT_JSON não configurado no Vercel' }, { status: 500 });
   }
 
-  const data: WeeklySnapshot = await req.json();
+  let credentials;
+  try {
+    credentials = JSON.parse(credJson);
+  } catch (e) {
+    return NextResponse.json({ error: 'JSON inválido em GOOGLE_SERVICE_ACCOUNT_JSON', detail: String(e) }, { status: 500 });
+  }
+
+  let data: WeeklySnapshot;
+  try {
+    data = await req.json();
+  } catch (e) {
+    return NextResponse.json({ error: 'Erro ao ler body da requisição', detail: String(e) }, { status: 500 });
+  }
   const prev = data.previousWeek;
 
-  const credentials = JSON.parse(credJson);
+  try {
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: [
@@ -212,4 +224,8 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     url: `https://docs.google.com/spreadsheets/d/${sid}/edit`,
   });
+  } catch (e) {
+    console.error('export-sheets error:', e);
+    return NextResponse.json({ error: 'Erro ao criar planilha', detail: String(e) }, { status: 500 });
+  }
 }
