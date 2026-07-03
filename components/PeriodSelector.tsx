@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 
 interface PeriodSelectorProps {
   days: number;
@@ -18,33 +18,53 @@ const PRESETS = [
   { label: '30 dias', days: 30 },
 ];
 
-function fmtDate(d: string): string {
+function fmtSingleDate(d: string): string {
+  const date = new Date(d + 'T00:00:00Z');
+  return date.toLocaleDateString('pt-BR', {
+    weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC',
+  });
+}
+
+function fmtShort(d: string): string {
   const date = new Date(d + 'T00:00:00Z');
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' });
 }
 
+function todayBRT(): string {
+  return new Date(new Date().getTime() - 3 * 60 * 60 * 1000).toISOString().split('T')[0];
+}
+
 export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev, hasNext }: PeriodSelectorProps) {
   const router = useRouter();
+  const isSingleDay = days === 1;
 
   const go = (newDays: number, newOffset: number) => {
     const params = new URLSearchParams();
-    if (newDays !== 7) params.set('days', String(newDays));
+    if (newDays !== 1) params.set('days', String(newDays));
     if (newOffset > 0) params.set('offset', String(newOffset));
     const q = params.toString();
     router.push(q ? `?${q}` : '/');
   };
 
-  const navBtnStyle = (active: boolean): React.CSSProperties => ({
-    width: '26px', height: '26px', borderRadius: '7px', border: 'none',
+  const handleCalendar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.value;
+    if (!selected) return;
+    const today = todayBRT();
+    const diffMs = new Date(today + 'T00:00:00Z').getTime() - new Date(selected + 'T00:00:00Z').getTime();
+    const diffDays = Math.round(diffMs / 86400000);
+    go(1, Math.max(0, diffDays));
+  };
+
+  const navBtn = (active: boolean): React.CSSProperties => ({
+    width: '28px', height: '28px', borderRadius: '8px', border: 'none',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     background: active ? 'rgba(59,125,216,0.18)' : 'rgba(255,255,255,0.06)',
     color: active ? '#60A5FA' : '#334155',
     cursor: active ? 'pointer' : 'default',
-    flexShrink: 0, padding: 0,
-    transition: 'all 0.15s',
+    flexShrink: 0, padding: 0, transition: 'all 0.15s',
   });
 
-  const presetStyle = (active: boolean): React.CSSProperties => ({
+  const presetBtn = (active: boolean): React.CSSProperties => ({
     height: '26px', padding: '0 10px', borderRadius: '7px', border: 'none',
     background: active ? '#3B7DD8' : 'rgba(255,255,255,0.07)',
     color: active ? 'white' : '#64748B',
@@ -58,30 +78,52 @@ export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev
       <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#F1F5F9', margin: '0 0 6px', letterSpacing: '-0.3px' }}>
         Dashboard de Funil
       </h1>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+
+        {/* Navegação dia a dia */}
+        <button style={navBtn(hasPrev)} onClick={() => hasPrev && go(days, offset + days)} disabled={!hasPrev} title="Anterior">
+          <ChevronLeft size={13} />
+        </button>
+
+        {isSingleDay ? (
+          <span style={{ fontSize: '13px', color: '#CBD5E1', fontWeight: 500, whiteSpace: 'nowrap' }}>
+            {fmtSingleDate(toDate)}
+          </span>
+        ) : (
+          <span style={{ fontSize: '13px', color: '#64748B', whiteSpace: 'nowrap' }}>
+            {fmtShort(fromDate)} – {fmtShort(toDate)}
+          </span>
+        )}
+
+        <button style={navBtn(hasNext)} onClick={() => hasNext && go(days, Math.max(0, offset - days))} disabled={!hasNext} title="Próximo">
+          <ChevronRight size={13} />
+        </button>
+
+        {/* Calendário (só no modo dia único) */}
+        {isSingleDay && (
+          <label style={{ ...navBtn(false), color: '#475569', cursor: 'pointer' }} title="Selecionar data">
+            <CalendarDays size={13} />
+            <input
+              type="date"
+              value={toDate}
+              max={todayBRT()}
+              onChange={handleCalendar}
+              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
+            />
+          </label>
+        )}
+
+        <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.10)', flexShrink: 0 }} />
+
+        {/* Presets de período agregado */}
         <div style={{ display: 'flex', gap: '4px' }}>
           {PRESETS.map(p => (
-            <button
-              key={p.days}
-              style={presetStyle(days === p.days)}
-              onClick={() => go(p.days, 0)}
-            >
+            <button key={p.days} style={presetBtn(days === p.days)} onClick={() => go(p.days, 0)}>
               {p.label}
             </button>
           ))}
         </div>
 
-        <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.10)', flexShrink: 0 }} />
-
-        <button style={navBtnStyle(hasPrev)} onClick={() => hasPrev && go(days, offset + days)} disabled={!hasPrev} title="Período anterior">
-          <ChevronLeft size={13} />
-        </button>
-        <p style={{ fontSize: '13px', color: '#64748B', margin: 0, whiteSpace: 'nowrap' }}>
-          {fmtDate(fromDate)} – {fmtDate(toDate)}
-        </p>
-        <button style={navBtnStyle(hasNext)} onClick={() => hasNext && go(days, Math.max(0, offset - days))} disabled={!hasNext} title="Período seguinte">
-          <ChevronRight size={13} />
-        </button>
       </div>
     </div>
   );

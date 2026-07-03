@@ -200,7 +200,7 @@ export default async function DashboardPage({
 }: {
   searchParams: { days?: string; offset?: string };
 }) {
-  const days = Math.max(1, Math.min(90, parseInt(searchParams.days ?? '7', 10) || 7));
+  const days = Math.max(1, Math.min(90, parseInt(searchParams.days ?? '1', 10) || 1));
   const offset = Math.max(0, parseInt(searchParams.offset ?? '0', 10) || 0);
 
   const today = todayBRT();
