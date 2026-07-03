@@ -269,14 +269,14 @@ export default async function DashboardPage({
       health: healthFromDelta(data.pipedrive.dealsCreated, prev?.pipedrive.dealsCreated),
     },
     {
-      label: 'Assinantes',
-      value: data.mailpoet.totalSubscribers,
-      prevValue: prev?.mailpoet.totalSubscribers ?? null,
-      sub: 'total MailPoet',
+      label: 'Novos assinantes',
+      value: data.mailpoet.newSubscribers,
+      prevValue: prev?.mailpoet.newSubscribers ?? null,
+      sub: `${data.mailpoet.totalSubscribers.toLocaleString('pt-BR')} total MailPoet`,
       gradient: 'linear-gradient(135deg, #F0883E 0%, #F6B05E 100%)',
       shadow: 'rgba(240,136,62,0.35)',
       icon: <Users size={18} />,
-      health: healthFromDelta(data.mailpoet.totalSubscribers, prev?.mailpoet.totalSubscribers),
+      health: healthFromDelta(data.mailpoet.newSubscribers, prev?.mailpoet.newSubscribers),
     },
   ];
 
