@@ -9,7 +9,6 @@ import Sidebar, { DayEntry } from '@/components/Sidebar';
 import PeriodSelector from '@/components/PeriodSelector';
 import WeekComparison from '@/components/WeekComparison';
 import ExecutiveSummary from '@/components/ExecutiveSummary';
-import ExportButton from '@/components/ExportButton';
 import Image from 'next/image';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -305,7 +304,6 @@ export default async function DashboardPage({
             />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-            <ExportButton data={data} />
             {!isEmpty && (
               <div className="glass" style={{ padding: '12px 20px', textAlign: 'right' }}>
                 <p style={{ fontSize: '11px', color: '#475569', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
