@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 
@@ -37,6 +38,7 @@ function todayBRT(): string {
 export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev, hasNext }: PeriodSelectorProps) {
   const router = useRouter();
   const isSingleDay = days === 1;
+  const calendarRef = useRef<HTMLInputElement>(null);
 
   const go = (newDays: number, newOffset: number) => {
     const params = new URLSearchParams();
@@ -44,6 +46,11 @@ export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev
     if (newOffset > 0) params.set('offset', String(newOffset));
     const q = params.toString();
     router.push(q ? `?${q}` : '/');
+  };
+
+  const openCalendar = () => {
+    if (!calendarRef.current) return;
+    try { calendarRef.current.showPicker(); } catch { calendarRef.current.click(); }
   };
 
   const handleCalendar = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,18 +106,32 @@ export default function PeriodSelector({ days, offset, fromDate, toDate, hasPrev
           <ChevronRight size={13} />
         </button>
 
-        {/* Calendário (só no modo dia único) */}
-        {isSingleDay && (
-          <label style={{ ...navBtn(false), color: '#475569', cursor: 'pointer' }} title="Selecionar data">
-            <CalendarDays size={13} />
-            <input
-              type="date"
-              value={toDate}
-              max={todayBRT()}
-              onChange={handleCalendar}
-              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
-            />
-          </label>
+        {/* Calendário — sempre visível */}
+        <div
+          style={{ ...navBtn(false), color: '#475569', cursor: 'pointer', position: 'relative' }}
+          title="Selecionar data"
+          onClick={openCalendar}
+        >
+          <CalendarDays size={13} />
+          <input
+            ref={calendarRef}
+            type="date"
+            value={toDate}
+            max={todayBRT()}
+            onChange={handleCalendar}
+            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
+          />
+        </div>
+
+        {/* Hoje — aparece quando não está no dia atual */}
+        {(!isSingleDay || offset > 0) && (
+          <button
+            style={{ ...presetBtn(false), color: '#94A3B8' }}
+            onClick={() => go(1, 0)}
+            title="Ir para hoje"
+          >
+            Hoje
+          </button>
         )}
 
         <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.10)', flexShrink: 0 }} />
