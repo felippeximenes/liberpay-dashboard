@@ -340,7 +340,7 @@ export default async function DashboardPage({
         )}
 
         {/* Resumo executivo */}
-        <ExecutiveSummary data={data} />
+        <ExecutiveSummary data={data} days={days} />
 
         {/* KPI Cards */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
