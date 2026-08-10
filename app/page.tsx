@@ -126,6 +126,10 @@ function aggregateSnapshots(
 
   if (prevSnapshots && prevSnapshots.length > 0) {
     snapshot.previousWeek = aggregateSnapshots(prevSnapshots, 'período anterior');
+    snapshot.mailpoet.newSubscribers = Math.max(
+      0,
+      snapshot.mailpoet.totalSubscribers - snapshot.previousWeek.mailpoet.totalSubscribers,
+    );
   }
 
   return snapshot;

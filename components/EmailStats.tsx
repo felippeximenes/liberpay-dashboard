@@ -38,10 +38,7 @@ function StatItem({ icon, label, value, sub, accent, gradient, shadow }: StatIte
 
 export default function EmailStats({ data }: { data: WeeklySnapshot }) {
   const { mailpoet } = data;
-
-  const newSubscribers = data.previousWeek
-    ? Math.max(0, mailpoet.totalSubscribers - data.previousWeek.mailpoet.totalSubscribers)
-    : mailpoet.newSubscribers;
+  const newSubscribers = mailpoet.newSubscribers;
 
   const rateAccent = mailpoet.openRate < 20 ? '#E03E5A' : '#00C0A0';
   const rateGradient = mailpoet.openRate < 20
